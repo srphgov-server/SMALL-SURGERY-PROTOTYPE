@@ -28,6 +28,7 @@ const STORAGE_KEYS = {
    INITIALIZATION
    =================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   initStorage();
   initClock();
   initNavigation();
@@ -42,6 +43,44 @@ document.addEventListener('DOMContentLoaded', () => {
   // Start live timers (1 sec interval)
   setInterval(updateLiveTimers, 1000);
 });
+
+/**
+ * Initialize Light / Dark theme management
+ */
+function initTheme() {
+  const savedTheme = localStorage.getItem('surgiflow_theme') || 'light';
+  applyTheme(savedTheme, false);
+
+  const btnToggleTheme = document.getElementById('btnToggleTheme');
+  if (btnToggleTheme) {
+    btnToggleTheme.addEventListener('click', () => {
+      const isCurrentlyDark = document.body.classList.contains('dark-mode');
+      const newTheme = isCurrentlyDark ? 'light' : 'dark';
+      applyTheme(newTheme, true);
+    });
+  }
+}
+
+function applyTheme(theme, notify = false) {
+  const themeIcon = document.getElementById('themeIcon');
+  const themeText = document.getElementById('themeText');
+
+  if (theme === 'dark') {
+    document.body.classList.add('dark-mode');
+    document.body.classList.remove('light-mode');
+    if (themeIcon) themeIcon.textContent = '🌙';
+    if (themeText) themeText.textContent = 'Dark';
+    localStorage.setItem('surgiflow_theme', 'dark');
+    if (notify) showToast('Switched to Dark Mode', 'info');
+  } else {
+    document.body.classList.remove('dark-mode');
+    document.body.classList.add('light-mode');
+    if (themeIcon) themeIcon.textContent = '☀️';
+    if (themeText) themeText.textContent = 'Light';
+    localStorage.setItem('surgiflow_theme', 'light');
+    if (notify) showToast('Switched to Light Mode', 'info');
+  }
+}
 
 /**
  * Initialize storage with defaults if first run
@@ -426,7 +465,7 @@ function renderPatientTable() {
       <tr>
         <td class="font-mono"><strong>${p.mrn}</strong></td>
         <td>
-          <div style="font-weight:700; color:#fff;">${escapeHtml(p.fullName)}</div>
+          <div style="font-weight:700; color:var(--heading-color);">${escapeHtml(p.fullName)}</div>
           <div class="text-xs text-muted font-mono">${escapeHtml(p.phone)}</div>
         </td>
         <td>
@@ -512,11 +551,11 @@ function renderCompletedTable() {
           <div class="text-xs text-muted font-mono">${compDate} ${compTime}</div>
         </td>
         <td>
-          <div style="font-weight:700; color:#fff;">${escapeHtml(c.patientName)}</div>
+          <div style="font-weight:700; color:var(--heading-color);">${escapeHtml(c.patientName)}</div>
           <div class="text-xs text-muted font-mono">${c.mrn}</div>
         </td>
         <td>
-          <div style="font-weight:600; color:#e2e8f0;">${escapeHtml(c.procedure)}</div>
+          <div style="font-weight:600; color:var(--text-main);">${escapeHtml(c.procedure)}</div>
           <div class="text-xs text-muted">${escapeHtml(c.anesthesia || 'Local')}</div>
         </td>
         <td>
@@ -599,8 +638,8 @@ function renderRoomsAndSurgeons() {
             <p><strong>Type:</strong> ${escapeHtml(room.type)}</p>
             ${isOccupied ? `
               <div style="margin-top:0.6rem; padding:0.6rem; background:rgba(16, 185, 129, 0.08); border-radius:6px; border:1px solid rgba(16, 185, 129, 0.2);">
-                <div style="color:#6ee7b7; font-weight:700;">Case: ${room.currentCase}</div>
-                <div style="color:#fff;">${escapeHtml(room.activePatient)}</div>
+                <div style="color:#059669; font-weight:700;">Case: ${room.currentCase}</div>
+                <div style="color:var(--heading-color); font-weight:600;">${escapeHtml(room.activePatient)}</div>
                 <div class="text-xs text-muted">${escapeHtml(room.activeProcedure)}</div>
               </div>
             ` : `
@@ -1447,8 +1486,8 @@ window.openCompleteCaseModal = function(caseId) {
   summaryBox.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem;">
       <div>
-        <h4 style="font-size:1.05rem; color:#fff;">${escapeHtml(item.patientName)} <span class="font-mono text-muted text-xs">(${item.mrn})</span></h4>
-        <div style="color:#38bdf8; font-weight:600; font-size:0.9rem;">${escapeHtml(item.procedure)}</div>
+        <h4 style="font-size:1.05rem; color:var(--heading-color);">${escapeHtml(item.patientName)} <span class="font-mono text-muted text-xs">(${item.mrn})</span></h4>
+        <div style="color:#0ea5e9; font-weight:600; font-size:0.9rem;">${escapeHtml(item.procedure)}</div>
       </div>
       <span class="status-badge in_progress font-mono">${item.queueNumber}</span>
     </div>
