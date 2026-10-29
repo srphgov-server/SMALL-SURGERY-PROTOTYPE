@@ -303,6 +303,17 @@ body {
   border-radius: var(--radius-sm);
 }
 
+.btn-lg {
+  font-size: 0.95rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
 /* ===================================================================
    LAYOUT & SIDEBAR
    =================================================================== */
@@ -987,6 +998,182 @@ body {
 
 .modal-card.modal-large {
   max-width: 720px;
+}
+
+/* Extra Large Clinical Queue Modal */
+.modal-card.modal-queue-xl {
+  max-width: 1060px;
+  width: 95vw;
+  max-height: 92vh;
+  padding: 2.25rem 2.5rem;
+  background: radial-gradient(circle at 50% 0%, #15243d 0%, #0d1627 100%);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.8), 0 0 35px rgba(6, 182, 212, 0.12);
+}
+
+.modal-icon.lg {
+  width: 48px;
+  height: 48px;
+}
+
+.modal-card.modal-queue-xl .modal-title-group h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+}
+
+.modal-card.modal-queue-xl .modal-title-group p {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+
+/* Clinical Step Section Dividers */
+.form-section-divider {
+  margin-top: 1.6rem;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.18);
+  display: flex;
+  align-items: center;
+}
+
+.form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+}
+
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0284c7, #06b6d4);
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 800;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.45);
+  flex-shrink: 0;
+}
+
+/* Enhanced Inputs & Selects inside modal-queue-xl */
+.modal-queue-xl .form-group label {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 0.35rem;
+}
+
+.modal-queue-xl .form-group input,
+.modal-queue-xl .form-group select,
+.modal-queue-xl .form-group textarea {
+  padding: 0.78rem 1rem;
+  font-size: 0.92rem;
+  border-radius: var(--radius-md);
+  background: #09101d;
+  border: 1px solid #233554;
+  color: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.modal-queue-xl .form-group input:focus,
+.modal-queue-xl .form-group select:focus,
+.modal-queue-xl .form-group textarea:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+  background: #0c1626;
+}
+
+/* Patient Mode Switcher enlargement */
+.modal-queue-xl .patient-mode-toggle {
+  background: #09101d;
+  border: 1px solid #233554;
+  border-radius: var(--radius-md);
+  padding: 6px;
+  gap: 8px;
+  margin-bottom: 1.4rem;
+}
+
+.modal-queue-xl .mode-toggle-btn {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  gap: 0.65rem;
+}
+
+.modal-queue-xl .mode-toggle-btn.active {
+  background: #162540;
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+/* Patient Search Box in modal-queue-xl */
+.modal-queue-xl .patient-search-input-box {
+  background: #09101d;
+  border: 1px solid #233554;
+  border-radius: var(--radius-md);
+  padding: 0 1rem;
+}
+
+.modal-queue-xl .patient-search-input-box input {
+  font-size: 0.94rem;
+  padding: 0.85rem 0 !important;
+}
+
+/* Selected Patient Card in modal-queue-xl */
+.modal-queue-xl .selected-patient-card {
+  padding: 1.25rem 1.5rem;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  border-radius: var(--radius-md);
+}
+
+.modal-queue-xl .patient-check-avatar {
+  width: 44px;
+  height: 44px;
+  font-size: 1.15rem;
+}
+
+.modal-queue-xl .selected-patient-name {
+  font-size: 1.15rem;
+}
+
+.modal-queue-xl .selected-patient-meta {
+  font-size: 0.84rem;
+}
+
+/* Walk-in Container in modal-queue-xl */
+.modal-queue-xl .walkin-form-container {
+  padding: 1.5rem;
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: var(--radius-md);
+}
+
+/* Safety Checklist in modal-queue-xl */
+.modal-queue-xl .checkbox-row {
+  background: rgba(6, 182, 212, 0.06);
+  border: 1px solid rgba(6, 182, 212, 0.22);
+  border-radius: var(--radius-md);
+  padding: 0.95rem 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.modal-queue-xl .checkbox-text {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #e2e8f0;
 }
 
 @keyframes slideUp {
@@ -1769,6 +1956,13 @@ body {
     padding: 1.25rem 1rem;
   }
 
+  /* Modal Queue XL on Tablet */
+  .modal-card.modal-queue-xl {
+    max-width: 94vw;
+    width: 94vw;
+    padding: 1.85rem 1.5rem;
+  }
+
   .section-toolbar {
     flex-direction: column;
     align-items: stretch;
@@ -1909,6 +2103,63 @@ body {
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   }
 
+  .modal-card.modal-queue-xl {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 94vh;
+    padding: 1.35rem 1.1rem 2rem 1.1rem;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .modal-queue-xl .modal-title-group h3 {
+    font-size: 1.15rem;
+  }
+
+  .modal-queue-xl .form-section-divider {
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-queue-xl .patient-mode-toggle {
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .modal-queue-xl .mode-toggle-btn {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.84rem;
+    justify-content: flex-start;
+  }
+
+  .modal-queue-xl .patient-search-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .modal-queue-xl .selected-patient-card {
+    padding: 1rem;
+  }
+
+  .modal-queue-xl .walkin-form-container {
+    padding: 1rem;
+  }
+
+  .modal-queue-xl .checkbox-row {
+    padding: 0.75rem 0.9rem;
+  }
+
+  .modal-queue-xl .modal-footer {
+    flex-direction: column-reverse;
+    gap: 0.65rem;
+  }
+
+  .modal-queue-xl .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .modal-header {
     margin-bottom: 1rem;
   }
@@ -2023,6 +2274,18 @@ body {
   .selected-patient-meta {
     flex-wrap: wrap;
     gap: 0.35rem;
+  }
+
+  .selected-patient-identity {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .walkin-badge-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }
 

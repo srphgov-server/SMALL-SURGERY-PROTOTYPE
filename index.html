@@ -457,29 +457,37 @@
 
   <!-- 2. Queue Patient for Surgery Modal -->
   <div class="modal-backdrop hidden" id="modalQueue">
-    <div class="modal-card modal-large">
+    <div class="modal-card modal-queue-xl">
       <div class="modal-header">
         <div class="modal-title-group">
-          <div class="modal-icon teal">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          <div class="modal-icon teal lg">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
           </div>
           <div>
             <h3>Queue Patient for Minor Surgery</h3>
-            <p>Assign case details, operating room, surgeon, and priority</p>
+            <p>Schedule patient intake, operating room suite, attending surgeon, and clinical priority</p>
           </div>
         </div>
         <button class="modal-close" id="btnCloseQueueModal">&times;</button>
       </div>
 
       <form id="formQueueSurgery">
+        <!-- Section 1: Patient Selection / Walk-in Intake -->
+        <div class="form-section-divider full-width">
+          <div class="form-section-title">
+            <span class="step-badge">1</span>
+            <span>Patient Selection & Clinical Intake</span>
+          </div>
+        </div>
+
         <!-- Patient Mode Switcher: Search Existing vs Walk-in New Patient -->
         <div class="patient-mode-toggle full-width">
           <button type="button" class="mode-toggle-btn active" id="btnModeExisting" data-mode="existing">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <span>Search Existing Patient</span>
           </button>
           <button type="button" class="mode-toggle-btn" id="btnModeWalkin" data-mode="walkin">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
             <span>+ New Walk-in Patient (All-in-One)</span>
           </button>
         </div>
@@ -614,6 +622,14 @@
             <div class="field-error-hint hidden" id="walkinFieldError">Please fill in required patient fields (Name, Age, Gender, Phone).</div>
           </div>
 
+          <!-- Section 2: Surgical Procedure & Suite Assignment -->
+          <div class="form-section-divider full-width">
+            <div class="form-section-title">
+              <span class="step-badge">2</span>
+              <span>Surgical Procedure & Suite Assignment</span>
+            </div>
+          </div>
+
           <!-- Surgery Procedure -->
           <div class="form-group full-width">
             <label for="queueProcedure">Surgical Procedure *</label>
@@ -651,6 +667,14 @@
             <select id="queueRoom" required>
               <!-- Filled dynamically -->
             </select>
+          </div>
+
+          <!-- Section 3: Clinical Priority & Pre-Op Safety -->
+          <div class="form-section-divider full-width">
+            <div class="form-section-title">
+              <span class="step-badge">3</span>
+              <span>Clinical Priority & Pre-Op Safety</span>
+            </div>
           </div>
 
           <!-- Priority -->
@@ -694,8 +718,12 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" id="btnCancelQueueModal">Cancel</button>
-          <button type="submit" class="btn btn-accent" id="btnSubmitQueue">
+          <button type="button" class="btn btn-secondary btn-lg" id="btnCancelQueueModal">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-accent btn-lg" id="btnSubmitQueue">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
             <span id="btnSubmitQueueText">Confirm & Add to Queue</span>
           </button>
         </div>
