@@ -1715,36 +1715,326 @@ body {
 }
 
 /* ===================================================================
-   RESPONSIVENESS & PRINT
+   RESPONSIVENESS & MOBILE SYSTEM
    =================================================================== */
+
+/* Tablet & Medium Screens (<= 1024px) */
 @media (max-width: 1024px) {
   .app-layout {
     flex-direction: column;
   }
+
   .sidebar {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid var(--border-subtle);
-  }
-  .queue-header-row, .queue-row {
-    grid-template-columns: 1fr;
+    padding: 0.75rem 1rem;
     gap: 0.75rem;
   }
+
+  .nav-menu {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.82rem;
+  }
+
+  .sidebar-status-card {
+    padding: 0.75rem;
+  }
+
+  .room-status-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .main-content {
+    padding: 1.25rem 1rem;
+  }
+
+  .section-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .toolbar-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .search-box {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .search-box input {
+    width: 100%;
+  }
+  .search-box input:focus {
+    width: 100%;
+  }
+
+  /* Table Horizontal Scrolling */
+  .table-card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table {
+    min-width: 680px;
+  }
+
+  /* Queue Row Card Transformation on Tablets */
   .queue-header-row {
     display: none;
   }
+
+  .queue-list {
+    gap: 0.75rem;
+    padding: 0.5rem;
+  }
+
   .queue-row {
-    padding: 1.25rem;
-    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    padding: 1.15rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  .queue-row:hover {
+    background: var(--bg-card-hover);
+  }
+
+  .actions-cell {
+    display: flex;
+    width: 100%;
+    gap: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .actions-cell .btn {
+    flex: 1;
   }
 }
 
+/* Mobile Screens (<= 768px) */
+@media (max-width: 768px) {
+  .app-header {
+    height: auto;
+    min-height: 64px;
+    padding: 0.65rem 0.85rem;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .header-brand {
+    gap: 0.65rem;
+  }
+
+  .brand-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .brand-text .brand-title {
+    font-size: 1rem;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .header-metrics {
+    order: 3;
+    width: 100%;
+    justify-content: space-around;
+    padding: 4px 10px;
+    margin-top: 2px;
+  }
+
+  .header-actions {
+    margin-left: auto;
+    gap: 0.45rem;
+  }
+
+  .header-actions .btn {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.78rem;
+  }
+
+  /* Form Grids in Modals become 1 column */
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem;
+  }
+
+  .modal-backdrop {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    max-height: 92vh;
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .modal-header {
+    margin-bottom: 1rem;
+  }
+
+  .modal-title-group h3 {
+    font-size: 1.05rem;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+
+  /* Patient Mode Switcher on Mobile */
+  .patient-mode-toggle {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mode-toggle-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.78rem;
+  }
+
+  /* Segmented Controls & Toolbar on Mobile */
+  .segmented-control {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .segment-btn {
+    flex: 1;
+    text-align: center;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .toolbar-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar-right select,
+  .toolbar-right .btn,
+  .toolbar-right .search-box {
+    width: 100%;
+  }
+
+  /* Patient Action Group on Mobile */
+  .patient-actions-group {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .patient-actions-group .btn {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.75rem;
+  }
+
+  /* Toast position on Mobile */
+  .toast-container {
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .toast {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* Extra Small Phones (<= 480px) */
+@media (max-width: 480px) {
+  .header-actions .btn span {
+    display: none;
+  }
+
+  .header-actions .btn {
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .header-actions .btn svg {
+    margin: 0;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.78rem;
+  }
+
+  .selected-patient-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .selected-patient-header .btn {
+    width: 100%;
+  }
+
+  .selected-patient-meta {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+}
+
+/* ===================================================================
+   PRINT STYLING
+   =================================================================== */
 @media print {
   body {
     background: #ffffff !important;
     color: #000000 !important;
   }
-  .app-header, .sidebar, .modal-footer, .header-actions, .section-toolbar {
+  .app-header, .sidebar, .modal-footer, .header-actions, .section-toolbar, .toast-container {
     display: none !important;
   }
   .modal-backdrop {
@@ -1765,3 +2055,4 @@ body {
     border: 1px solid #cbd5e1 !important;
   }
 }
+
