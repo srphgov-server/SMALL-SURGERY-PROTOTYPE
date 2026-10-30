@@ -270,7 +270,7 @@ function renderQueueList() {
   // Search filter
   if (state.searchQuery.trim() !== '') {
     const q = state.searchQuery.toLowerCase();
-    items = items.filter(item => 
+    items = items.filter(item =>
       item.patientName.toLowerCase().includes(q) ||
       item.mrn.toLowerCase().includes(q) ||
       item.procedure.toLowerCase().includes(q) ||
@@ -430,7 +430,7 @@ function renderPatientTable() {
 
   let list = [...state.patients];
   if (query) {
-    list = list.filter(p => 
+    list = list.filter(p =>
       p.fullName.toLowerCase().includes(query) ||
       p.mrn.toLowerCase().includes(query) ||
       p.phone.toLowerCase().includes(query)
@@ -451,9 +451,9 @@ function renderPatientTable() {
 
     if (activeCase) {
       if (activeCase.status === 'in_progress') {
-        queueStatusTag = `<span class="status-badge in_progress"><span class="metric-dot active"></span> In Minor OR (${activeCase.queueNumber})</span>`;
+        queueStatusTag = `<span class="status-badge in_progress" style="cursor:pointer;" onclick="openCaseDetailsModal('${activeCase.id}')" title="Click to view minor surgery details"><span class="metric-dot active"></span> In Minor OR (${activeCase.queueNumber})</span>`;
       } else {
-        queueStatusTag = `<span class="status-badge waiting">Queued (${activeCase.queueNumber})</span>`;
+        queueStatusTag = `<span class="status-badge waiting" style="cursor:pointer;" onclick="openCaseDetailsModal('${activeCase.id}')" title="Click to view queued case details"><span class="metric-dot active"></span> Queued (${activeCase.queueNumber})</span>`;
       }
     } else {
       queueStatusTag = `<span class="text-muted text-xs">Not Queued</span>`;
@@ -483,17 +483,6 @@ function renderPatientTable() {
         </td>
         <td style="text-align: right;">
           <div class="patient-actions-group">
-            ${!activeCase ? `
-              <button class="btn btn-accent btn-sm" onclick="quickQueuePatient('${p.id}')" title="Queue patient for surgery">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-                <span>Add Queue</span>
-              </button>
-            ` : `
-              <button class="btn btn-secondary btn-sm" onclick="openCaseDetailsModal('${activeCase.id}')" title="View active case in queue">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>Queued</span>
-              </button>
-            `}
             <button class="btn btn-secondary btn-sm" onclick="openEditPatientModal('${p.id}')" title="Edit patient details">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               <span>Edit</span>
@@ -522,7 +511,7 @@ function renderCompletedTable() {
 
   let list = [...state.completed];
   if (query) {
-    list = list.filter(c => 
+    list = list.filter(c =>
       c.patientName.toLowerCase().includes(query) ||
       c.mrn.toLowerCase().includes(query) ||
       c.procedure.toLowerCase().includes(query) ||
@@ -683,13 +672,13 @@ function populateDropdowns() {
   const roomSelect = document.getElementById('queueRoom');
 
   if (surgeonSelect && state.surgeons.length > 0) {
-    surgeonSelect.innerHTML = state.surgeons.map(s => 
+    surgeonSelect.innerHTML = state.surgeons.map(s =>
       `<option value="${escapeHtml(s.name)}">${escapeHtml(s.name)} (${s.specialty})</option>`
     ).join('');
   }
 
   if (roomSelect && state.rooms.length > 0) {
-    roomSelect.innerHTML = state.rooms.map(r => 
+    roomSelect.innerHTML = state.rooms.map(r =>
       `<option value="${escapeHtml(r.name)}">${escapeHtml(r.name)} (${r.status})</option>`
     ).join('');
   }
@@ -892,8 +881,8 @@ function initPatientSearchInModal() {
     btnToggleOptions.addEventListener('click', () => {
       const isOpen = advancedSettings.classList.toggle('open');
       if (toggleOptionsText) {
-        toggleOptionsText.textContent = isOpen 
-          ? '⚙️ Hide OR Suite & Anesthesia Options ▲' 
+        toggleOptionsText.textContent = isOpen
+          ? '⚙️ Hide OR Suite & Anesthesia Options ▲'
           : '⚙️ Show OR Suite & Anesthesia Details ▼';
       }
     });
@@ -1028,7 +1017,7 @@ function renderPatientSearchResults(query = '') {
   let matches = state.patients;
 
   if (q !== '') {
-    matches = matches.filter(p => 
+    matches = matches.filter(p =>
       p.fullName.toLowerCase().includes(q) ||
       p.mrn.toLowerCase().includes(q) ||
       p.phone.toLowerCase().includes(q)
@@ -1076,8 +1065,8 @@ function renderPatientSearchResults(query = '') {
               <span>+ Add to Queue</span>
             </button>
           `}
-        </div>
-      </div>
+        </div >
+      </div >
     `;
   }).join('');
 
@@ -1093,7 +1082,7 @@ window.quickAddPatientDirectly = function(patientId) {
 
   const isQueued = state.queue.find(item => item.patientId === patientId);
   if (isQueued) {
-    showToast(`This patient is already queued under case ${isQueued.queueNumber}`, 'error');
+    showToast(`This patient is already queued under case ${ isQueued.queueNumber }`, 'error');
     return;
   }
 
@@ -1120,7 +1109,7 @@ window.quickAddPatientDirectly = function(patientId) {
   const anesthesia = document.getElementById('queueAnesthesia') ? document.getElementById('queueAnesthesia').value : 'Local Infiltration (1% Lidocaine w/ Epi)';
   const notes = patient.notes || '';
 
-  const queueNumber = `Q-${100 + state.queue.length + state.completed.length + 1}`;
+  const queueNumber = `Q - ${ 100 + state.queue.length + state.completed.length + 1 }`;
 
   const queueItem = {
     id: 'queue-' + Date.now(),
@@ -1151,7 +1140,7 @@ window.quickAddPatientDirectly = function(patientId) {
   closeModal(document.getElementById('modalQueue'));
   document.getElementById('navQueueTab').click();
 
-  showToast(`Added ${patient.fullName} (${patient.mrn}) to Surgery Queue as ${queueNumber}!`, 'success');
+  showToast(`Added ${ patient.fullName }(${ patient.mrn }) to Surgery Queue as ${ queueNumber }!`, 'success');
 };
 
 /**
@@ -1171,7 +1160,7 @@ function executeAddSelectedPatientToQueue() {
 
   const existing = state.queue.find(q => q.patientId === patientId);
   if (existing) {
-    showToast(`Patient is already queued under case ${existing.queueNumber}`, 'error');
+    showToast(`Patient is already queued under case ${ existing.queueNumber }`, 'error');
     return false;
   }
 
@@ -1199,7 +1188,7 @@ function executeAddSelectedPatientToQueue() {
   const anesthesia = document.getElementById('queueAnesthesia') ? document.getElementById('queueAnesthesia').value : 'Local Infiltration (1% Lidocaine w/ Epi)';
   const notes = document.getElementById('queueNotes') ? document.getElementById('queueNotes').value.trim() : (patient.notes || '');
 
-  const queueNumber = `Q-${100 + state.queue.length + state.completed.length + 1}`;
+  const queueNumber = `Q - ${ 100 + state.queue.length + state.completed.length + 1 }`;
 
   const queueItem = {
     id: 'queue-' + Date.now(),
@@ -1230,14 +1219,14 @@ function executeAddSelectedPatientToQueue() {
   closeModal(document.getElementById('modalQueue'));
   document.getElementById('navQueueTab').click();
 
-  showToast(`Added ${patient.fullName} (${patient.mrn}) to Surgery Queue as ${queueNumber}!`, 'success');
+  showToast(`Added ${ patient.fullName }(${ patient.mrn }) to Surgery Queue as ${ queueNumber }!`, 'success');
   return true;
 }
 
 window.onSelectPatientResult = function(patientId) {
   const isQueued = state.queue.find(item => item.patientId === patientId);
   if (isQueued) {
-    showToast(`This patient is already queued under case ${isQueued.queueNumber}`, 'error');
+    showToast(`This patient is already queued under case ${ isQueued.queueNumber }`, 'error');
     return;
   }
   selectPatientForQueue(patientId);
@@ -1275,8 +1264,8 @@ function selectPatientForQueue(patientId) {
 
   if (nameEl) nameEl.textContent = patient.fullName;
   if (mrnEl) mrnEl.textContent = patient.mrn;
-  if (demoEl) demoEl.textContent = `${patient.age}y / ${patient.gender}`;
-  if (bloodEl) bloodEl.textContent = `Blood: ${patient.bloodType || 'Unknown'}`;
+  if (demoEl) demoEl.textContent = `${ patient.age }y / ${ patient.gender }`;
+  if (bloodEl) bloodEl.textContent = `Blood: ${ patient.bloodType || 'Unknown' }`;
   if (phoneEl) phoneEl.textContent = patient.phone;
   if (allergiesEl) {
     allergiesEl.textContent = patient.allergies || 'No Known Drug Allergies (NKDA)';
@@ -1422,7 +1411,7 @@ window.deletePatient = function(patientId) {
   if (!patient) return;
 
   const activeCase = state.queue.find(q => q.patientId === patientId);
-  let confirmMsg = `Are you sure you want to delete patient "${patient.fullName}" (${patient.mrn}) from the Patient List?`;
+  let confirmMsg = `Are you sure you want to delete patient "${patient.fullName}"(${ patient.mrn }) from the Patient List ? `;
   if (activeCase) {
     confirmMsg += `\n\n⚠️ Warning: This patient is currently in the active Surgery Queue (Case ${activeCase.queueNumber}). Deleting them will also cancel their active surgery case.`;
   }
