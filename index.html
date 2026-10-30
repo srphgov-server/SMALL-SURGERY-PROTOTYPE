@@ -469,7 +469,7 @@
           </div>
           <div>
             <h3>Queue Patient for Minor Surgery</h3>
-            <p>Schedule patient intake, operating room suite, attending surgeon, and clinical priority</p>
+            <p>Search a patient from Patient List and add to queue with 1 click</p>
           </div>
         </div>
         <button class="modal-close" id="btnCloseQueueModal">&times;</button>
@@ -480,7 +480,7 @@
         <div class="form-section-divider full-width">
           <div class="form-section-title">
             <span class="step-badge">1</span>
-            <span>Patient Selection & Clinical Intake</span>
+            <span>Search Patient from Patient List</span>
           </div>
         </div>
 
@@ -500,7 +500,11 @@
           <!-- MODE 1: Patient Search from Patient List -->
           <div class="form-group full-width patient-picker-group" id="patientSearchSection">
             <div class="patient-search-header-row">
-              <label for="queuePatientSearchInput">Search Patient from Patient List *</label>
+              <label for="queuePatientSearchInput" class="search-label-highlight">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span>Search Patient from Patient List *</span>
+                <span class="search-sub-hint">(Select below or type to filter)</span>
+              </label>
               <button type="button" class="btn-link-action" id="btnSwitchToWalkinFromSearch">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
                 <span>Walk-in Patient? Enter Details Directly</span>
@@ -509,14 +513,14 @@
 
             <div class="patient-search-container" id="patientSearchContainer">
               <div class="patient-search-input-box">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 <input type="text" id="queuePatientSearchInput" placeholder="Type patient name, MRN, or phone number to search list..." autocomplete="off">
                 <button type="button" class="btn-clear-search hidden" id="btnClearPatientSearch" title="Clear search">&times;</button>
               </div>
 
               <!-- Live matching dropdown list -->
-              <div class="patient-search-dropdown hidden" id="patientSearchResults">
-                <!-- Dynamically rendered list items -->
+              <div class="patient-search-dropdown" id="patientSearchResults">
+                <!-- Dynamically rendered list items with + Add to Queue button -->
               </div>
             </div>
 
@@ -555,6 +559,55 @@
                 <div class="patient-detail-tag full">
                   <strong>Pre-Op History:</strong>
                   <span id="selectedPatientNotes" class="text-muted">None</span>
+                </div>
+              </div>
+
+              <!-- Dedicated Highlighted Action to Add Selected Patient to Queue List -->
+              <div class="selected-patient-queue-action">
+                <div class="quick-queue-header">
+                  <span class="quick-queue-badge">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Ready for Surgery Queue
+                  </span>
+                  <span class="text-xs text-muted">Confirm surgical procedure & click button below to add to Queue list</span>
+                </div>
+
+                <div class="quick-queue-controls">
+                  <div class="quick-control-field">
+                    <label for="queueQuickProcedure">Surgical Procedure *</label>
+                    <select id="queueQuickProcedure" class="input-select">
+                      <option value="Abscess Incision & Drainage">Abscess Incision & Drainage</option>
+                      <option value="Lipoma Excision (Subcutaneous)">Lipoma Excision (Subcutaneous)</option>
+                      <option value="Sebaceous Cyst Removal">Sebaceous Cyst Removal</option>
+                      <option value="Wound Debridement & Suturing">Complex Wound Debridement & Primary Suturing</option>
+                      <option value="Punch / Shave Skin Biopsy">Punch / Shave Skin Biopsy</option>
+                      <option value="Ingrown Toenail Wedge Resection">Ingrown Toenail Partial Matrixectomy</option>
+                      <option value="Foreign Body Removal (Soft Tissue)">Foreign Body Removal (Soft Tissue)</option>
+                      <option value="Scar Revision / Minor Excision">Scar Revision / Minor Excision</option>
+                      <option value="Other Minor Surgical Procedure">Other Minor Surgical Procedure...</option>
+                    </select>
+                  </div>
+
+                  <div class="quick-control-field">
+                    <label for="queueQuickPriority">Case Priority *</label>
+                    <select id="queueQuickPriority" class="input-select">
+                      <option value="Standard">Standard (Routine minor case)</option>
+                      <option value="High">High (Infection, significant pain)</option>
+                      <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
+                      <option value="Elective">Elective (Cosmetic/elective)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="quick-queue-action-buttons">
+                  <button type="button" class="btn btn-accent btn-lg btn-add-selected-now" id="btnQuickAddSelectedToQueue">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+                    <span>Add Selected Patient to Queue List</span>
+                  </button>
+                  <button type="button" class="btn-toggle-options" id="btnToggleOptions">
+                    <span id="toggleOptionsText">⚙️ Show OR Suite & Anesthesia Details</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
                 </div>
               </div>
             </div>
@@ -626,98 +679,104 @@
             <div class="field-error-hint hidden" id="walkinFieldError">Please fill in required patient fields (Name, Age, Gender, Phone).</div>
           </div>
 
-          <!-- Section 2: Surgical Procedure & Suite Assignment -->
-          <div class="form-section-divider full-width">
-            <div class="form-section-title">
-              <span class="step-badge">2</span>
-              <span>Surgical Procedure & Suite Assignment</span>
+          <!-- Advanced Settings Wrapper (Collapsible for quick search flow, always visible in Walk-in) -->
+          <div class="advanced-queue-settings" id="advancedQueueSettings">
+            <!-- Section 2: Surgical Procedure & Suite Assignment -->
+            <div class="form-section-divider full-width">
+              <div class="form-section-title">
+                <span class="step-badge">2</span>
+                <span>Surgical Procedure & Suite Assignment</span>
+              </div>
             </div>
-          </div>
 
-          <!-- Surgery Procedure -->
-          <div class="form-group full-width">
-            <label for="queueProcedure">Surgical Procedure *</label>
-            <select id="queueProcedure" required>
-              <option value="">-- Select Minor Surgery Procedure --</option>
-              <option value="Abscess Incision & Drainage">Abscess Incision & Drainage</option>
-              <option value="Lipoma Excision (Subcutaneous)">Lipoma Excision (Subcutaneous)</option>
-              <option value="Sebaceous Cyst Removal">Sebaceous Cyst Removal</option>
-              <option value="Wound Debridement & Suturing">Complex Wound Debridement & Primary Suturing</option>
-              <option value="Punch / Shave Skin Biopsy">Punch / Shave Skin Biopsy</option>
-              <option value="Ingrown Toenail Wedge Resection">Ingrown Toenail Partial Matrixectomy</option>
-              <option value="Foreign Body Removal (Soft Tissue)">Foreign Body Removal (Soft Tissue)</option>
-              <option value="Scar Revision / Minor Excision">Scar Revision / Minor Excision</option>
-              <option value="Other Minor Surgical Procedure">Other Minor Surgical Procedure...</option>
-            </select>
-          </div>
+            <div class="form-grid">
+              <!-- Surgery Procedure -->
+              <div class="form-group full-width">
+                <label for="queueProcedure">Surgical Procedure *</label>
+                <select id="queueProcedure">
+                  <option value="Abscess Incision & Drainage">Abscess Incision & Drainage</option>
+                  <option value="Lipoma Excision (Subcutaneous)">Lipoma Excision (Subcutaneous)</option>
+                  <option value="Sebaceous Cyst Removal">Sebaceous Cyst Removal</option>
+                  <option value="Wound Debridement & Suturing">Complex Wound Debridement & Primary Suturing</option>
+                  <option value="Punch / Shave Skin Biopsy">Punch / Shave Skin Biopsy</option>
+                  <option value="Ingrown Toenail Wedge Resection">Ingrown Toenail Partial Matrixectomy</option>
+                  <option value="Foreign Body Removal (Soft Tissue)">Foreign Body Removal (Soft Tissue)</option>
+                  <option value="Scar Revision / Minor Excision">Scar Revision / Minor Excision</option>
+                  <option value="Other Minor Surgical Procedure">Other Minor Surgical Procedure...</option>
+                </select>
+              </div>
 
-          <!-- Custom Procedure Specification if needed -->
-          <div class="form-group full-width hidden" id="customProcGroup">
-            <label for="queueCustomProcedure">Custom Procedure Description</label>
-            <input type="text" id="queueCustomProcedure" placeholder="Specify custom procedure name...">
-          </div>
+              <!-- Custom Procedure Specification if needed -->
+              <div class="form-group full-width hidden" id="customProcGroup">
+                <label for="queueCustomProcedure">Custom Procedure Description</label>
+                <input type="text" id="queueCustomProcedure" placeholder="Specify custom procedure name...">
+              </div>
 
-          <!-- Assigned Surgeon -->
-          <div class="form-group">
-            <label for="queueSurgeon">Lead Surgeon / Practitioner *</label>
-            <select id="queueSurgeon" required>
-              <!-- Filled dynamically -->
-            </select>
-          </div>
+              <!-- Assigned Surgeon -->
+              <div class="form-group">
+                <label for="queueSurgeon">Lead Surgeon / Practitioner *</label>
+                <select id="queueSurgeon">
+                  <!-- Filled dynamically -->
+                </select>
+              </div>
 
-          <!-- Minor OR Suite -->
-          <div class="form-group">
-            <label for="queueRoom">Minor OR / Treatment Suite *</label>
-            <select id="queueRoom" required>
-              <!-- Filled dynamically -->
-            </select>
-          </div>
-
-          <!-- Section 3: Clinical Priority & Pre-Op Safety -->
-          <div class="form-section-divider full-width">
-            <div class="form-section-title">
-              <span class="step-badge">3</span>
-              <span>Clinical Priority & Pre-Op Safety</span>
+              <!-- Minor OR Suite -->
+              <div class="form-group">
+                <label for="queueRoom">Minor OR / Treatment Suite *</label>
+                <select id="queueRoom">
+                  <!-- Filled dynamically -->
+                </select>
+              </div>
             </div>
-          </div>
 
-          <!-- Priority -->
-          <div class="form-group">
-            <label for="queuePriority">Case Priority *</label>
-            <select id="queuePriority" required>
-              <option value="Standard">Standard (Routine minor case)</option>
-              <option value="High">High (Infection, significant pain)</option>
-              <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
-              <option value="Elective">Elective (Cosmetic/elective)</option>
-            </select>
-          </div>
+            <!-- Section 3: Clinical Priority & Pre-Op Safety -->
+            <div class="form-section-divider full-width">
+              <div class="form-section-title">
+                <span class="step-badge">3</span>
+                <span>Clinical Priority & Pre-Op Safety</span>
+              </div>
+            </div>
 
-          <!-- Anesthesia Type -->
-          <div class="form-group">
-            <label for="queueAnesthesia">Anesthesia Type *</label>
-            <select id="queueAnesthesia" required>
-              <option value="Local Infiltration (1% Lidocaine w/ Epi)">Local Infiltration (1% Lidocaine w/ Epi)</option>
-              <option value="Local Infiltration (Plain Lidocaine)">Local Infiltration (Plain Lidocaine)</option>
-              <option value="Digital / Peripheral Nerve Block">Digital / Peripheral Nerve Block</option>
-              <option value="Topical Anesthesia (EMLA Cream)">Topical Anesthesia (EMLA Cream)</option>
-              <option value="Field Block Anesthesia">Field Block Anesthesia</option>
-              <option value="None / Ice & Pressure">None / Cryoanalgesia</option>
-            </select>
-          </div>
+            <div class="form-grid">
+              <!-- Priority -->
+              <div class="form-group">
+                <label for="queuePriority">Case Priority *</label>
+                <select id="queuePriority">
+                  <option value="Standard">Standard (Routine minor case)</option>
+                  <option value="High">High (Infection, significant pain)</option>
+                  <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
+                  <option value="Elective">Elective (Cosmetic/elective)</option>
+                </select>
+              </div>
 
-          <!-- Clinical Indications / Notes -->
-          <div class="form-group full-width">
-            <label for="queueNotes">Surgical Site & Pre-Op Instructions</label>
-            <textarea id="queueNotes" rows="2" placeholder="e.g. Left forearm 3cm lesion; marked with surgical pen; sterile draping ready..."></textarea>
-          </div>
+              <!-- Anesthesia Type -->
+              <div class="form-group">
+                <label for="queueAnesthesia">Anesthesia Type *</label>
+                <select id="queueAnesthesia">
+                  <option value="Local Infiltration (1% Lidocaine w/ Epi)">Local Infiltration (1% Lidocaine w/ Epi)</option>
+                  <option value="Local Infiltration (Plain Lidocaine)">Local Infiltration (Plain Lidocaine)</option>
+                  <option value="Digital / Peripheral Nerve Block">Digital / Peripheral Nerve Block</option>
+                  <option value="Topical Anesthesia (EMLA Cream)">Topical Anesthesia (EMLA Cream)</option>
+                  <option value="Field Block Anesthesia">Field Block Anesthesia</option>
+                  <option value="None / Ice & Pressure">None / Cryoanalgesia</option>
+                </select>
+              </div>
 
-          <!-- Safety Checklist Acknowledgment -->
-          <div class="form-group full-width checkbox-row">
-            <label class="custom-checkbox">
-              <input type="checkbox" id="queueChecklistConfirm" required checked>
-              <span class="checkmark"></span>
-              <span class="checkbox-text">Informed consent confirmed & WHO Surgical Safety Site Marking verified</span>
-            </label>
+              <!-- Clinical Indications / Notes -->
+              <div class="form-group full-width">
+                <label for="queueNotes">Surgical Site & Pre-Op Instructions</label>
+                <textarea id="queueNotes" rows="2" placeholder="e.g. Left forearm 3cm lesion; marked with surgical pen; sterile draping ready..."></textarea>
+              </div>
+
+              <!-- Safety Checklist Acknowledgment -->
+              <div class="form-group full-width checkbox-row">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="queueChecklistConfirm" checked>
+                  <span class="checkmark"></span>
+                  <span class="checkbox-text">Informed consent confirmed & WHO Surgical Safety Site Marking verified</span>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -728,7 +787,7 @@
           </button>
           <button type="submit" class="btn btn-accent btn-lg" id="btnSubmitQueue">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-            <span id="btnSubmitQueueText">Confirm & Add to Queue</span>
+            <span id="btnSubmitQueueText">Add to Queue List</span>
           </button>
         </div>
       </form>

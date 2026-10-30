@@ -876,6 +876,60 @@ function initPatientSearchInModal() {
     });
   }
 
+  // Direct Button on Selected Patient Card to Add to Queue List
+  const btnQuickAddSelected = document.getElementById('btnQuickAddSelectedToQueue');
+  if (btnQuickAddSelected) {
+    btnQuickAddSelected.addEventListener('click', () => {
+      executeAddSelectedPatientToQueue();
+    });
+  }
+
+  // Toggle Advanced Settings (OR Suite, Surgeon, Anesthesia)
+  const btnToggleOptions = document.getElementById('btnToggleOptions');
+  const advancedSettings = document.getElementById('advancedQueueSettings');
+  const toggleOptionsText = document.getElementById('toggleOptionsText');
+  if (btnToggleOptions && advancedSettings) {
+    btnToggleOptions.addEventListener('click', () => {
+      const isOpen = advancedSettings.classList.toggle('open');
+      if (toggleOptionsText) {
+        toggleOptionsText.textContent = isOpen 
+          ? '⚙️ Hide OR Suite & Anesthesia Options ▲' 
+          : '⚙️ Show OR Suite & Anesthesia Details ▼';
+      }
+    });
+  }
+
+  // Two-way synchronization between quick selects and advanced form selects
+  const quickProc = document.getElementById('queueQuickProcedure');
+  const mainProc = document.getElementById('queueProcedure');
+  if (quickProc && mainProc) {
+    quickProc.addEventListener('change', () => {
+      mainProc.value = quickProc.value;
+      const customGroup = document.getElementById('customProcGroup');
+      if (customGroup) {
+        if (quickProc.value === 'Other Minor Surgical Procedure') {
+          customGroup.classList.remove('hidden');
+        } else {
+          customGroup.classList.add('hidden');
+        }
+      }
+    });
+    mainProc.addEventListener('change', () => {
+      quickProc.value = mainProc.value;
+    });
+  }
+
+  const quickPriority = document.getElementById('queueQuickPriority');
+  const mainPriority = document.getElementById('queuePriority');
+  if (quickPriority && mainPriority) {
+    quickPriority.addEventListener('change', () => {
+      mainPriority.value = quickPriority.value;
+    });
+    mainPriority.addEventListener('change', () => {
+      quickPriority.value = mainPriority.value;
+    });
+  }
+
   if (!searchInput || !resultsContainer) return;
 
   // Search input typing
@@ -930,10 +984,12 @@ function setQueueModalMode(mode) {
   const btnModeWalkin = document.getElementById('btnModeWalkin');
   const searchSection = document.getElementById('patientSearchSection');
   const walkinSection = document.getElementById('walkinPatientSection');
+  const advancedSettings = document.getElementById('advancedQueueSettings');
   const btnSubmitText = document.getElementById('btnSubmitQueueText');
   const walkinMrnPreview = document.getElementById('walkinMrnPreview');
   const walkinError = document.getElementById('walkinFieldError');
   const patientSelectError = document.getElementById('patientSelectError');
+  const toggleOptionsText = document.getElementById('toggleOptionsText');
 
   if (walkinError) walkinError.classList.add('hidden');
   if (patientSelectError) patientSelectError.classList.add('hidden');
@@ -943,6 +999,7 @@ function setQueueModalMode(mode) {
     if (btnModeExisting) btnModeExisting.classList.remove('active');
     if (searchSection) searchSection.classList.add('hidden');
     if (walkinSection) walkinSection.classList.remove('hidden');
+    if (advancedSettings) advancedSettings.classList.add('open');
     if (btnSubmitText) btnSubmitText.textContent = 'Register Patient & Add to Queue';
     if (walkinMrnPreview) walkinMrnPreview.textContent = `MRN-${Math.floor(1000 + Math.random() * 9000)}`;
     const walkinName = document.getElementById('walkinFullName');
@@ -952,7 +1009,9 @@ function setQueueModalMode(mode) {
     if (btnModeWalkin) btnModeWalkin.classList.remove('active');
     if (searchSection) searchSection.classList.remove('hidden');
     if (walkinSection) walkinSection.classList.add('hidden');
-    if (btnSubmitText) btnSubmitText.textContent = 'Confirm & Add to Queue';
+    if (advancedSettings) advancedSettings.classList.remove('open');
+    if (toggleOptionsText) toggleOptionsText.textContent = '⚙️ Show OR Suite & Anesthesia Details ▼';
+    if (btnSubmitText) btnSubmitText.textContent = 'Add to Queue List';
     const searchInput = document.getElementById('queuePatientSearchInput');
     if (searchInput) searchInput.focus();
   }
@@ -965,7 +1024,7 @@ function renderPatientSearchResults(query = '') {
   const container = document.getElementById('patientSearchResults');
   if (!container) return;
 
-  const q = query.toLowerCase();
+  const q = query.toLowerCase().trim();
   let matches = state.patients;
 
   if (q !== '') {
@@ -998,24 +1057,181 @@ function renderPatientSearchResults(query = '') {
         <div class="patient-item-left">
           <div class="patient-item-avatar">${escapeHtml(p.fullName.charAt(0))}</div>
           <div class="patient-item-info">
-            <div class="item-name">${escapeHtml(p.fullName)}</div>
-            <div class="item-sub font-mono">${p.phone} • Blood: ${p.bloodType || 'Unknown'}</div>
+            <div class="item-name-row">
+              <span class="item-name">${escapeHtml(p.fullName)}</span>
+              <span class="mrn-badge font-mono">${p.mrn}</span>
+            </div>
+            <div class="item-sub font-mono">
+              ${p.phone} • ${p.age}y / ${p.gender} • Blood: <strong style="color:#0284c7;">${p.bloodType || 'Unknown'}</strong>
+            </div>
+            ${hasAllergy ? `<div class="item-allergy-alert text-danger">⚠️ Allergies: ${escapeHtml(p.allergies)}</div>` : ''}
           </div>
         </div>
         <div class="patient-item-right">
-          <span class="mrn-badge font-mono">${p.mrn}</span>
-          <span style="font-size:0.75rem; color:var(--text-secondary);">${p.age}y / ${p.gender}</span>
           ${isQueued ? `
-            <span class="status-badge waiting" style="font-size:0.68rem; padding:1px 6px;">Already Queued (${isQueued.queueNumber})</span>
-          ` : (hasAllergy ? `
-            <span class="text-danger" style="font-size:0.72rem; font-weight:600;">⚠️ ${escapeHtml(p.allergies.slice(0, 15))}</span>
-          ` : '')}
+            <span class="status-badge waiting">Queued (${isQueued.queueNumber})</span>
+          ` : `
+            <button type="button" class="btn btn-accent btn-sm btn-item-quick-add" onclick="event.stopPropagation(); quickAddPatientDirectly('${p.id}')" title="Directly add this patient to surgery queue">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+              <span>+ Add to Queue</span>
+            </button>
+          `}
         </div>
       </div>
     `;
   }).join('');
 
   container.classList.remove('hidden');
+}
+
+/**
+ * Instant direct add from search dropdown row
+ */
+window.quickAddPatientDirectly = function(patientId) {
+  const patient = state.patients.find(p => p.id === patientId);
+  if (!patient) return;
+
+  const isQueued = state.queue.find(item => item.patientId === patientId);
+  if (isQueued) {
+    showToast(`This patient is already queued under case ${isQueued.queueNumber}`, 'error');
+    return;
+  }
+
+  // Procedure
+  const quickProc = document.getElementById('queueQuickProcedure');
+  const mainProc = document.getElementById('queueProcedure');
+  let procedure = (quickProc && quickProc.value) ? quickProc.value : (mainProc && mainProc.value ? mainProc.value : 'Abscess Incision & Drainage');
+  if (!procedure || procedure === 'Other Minor Surgical Procedure') {
+    procedure = 'Abscess Incision & Drainage';
+  }
+
+  // Priority
+  const quickPriority = document.getElementById('queueQuickPriority');
+  const mainPriority = document.getElementById('queuePriority');
+  const priority = (quickPriority && quickPriority.value) ? quickPriority.value : (mainPriority && mainPriority.value ? mainPriority.value : 'Standard');
+
+  // Surgeon & Room defaults
+  let surgeon = document.getElementById('queueSurgeon') ? document.getElementById('queueSurgeon').value : '';
+  if (!surgeon && state.surgeons.length > 0) surgeon = state.surgeons[0].name;
+
+  let room = document.getElementById('queueRoom') ? document.getElementById('queueRoom').value : '';
+  if (!room && state.rooms.length > 0) room = state.rooms[0].name;
+
+  const anesthesia = document.getElementById('queueAnesthesia') ? document.getElementById('queueAnesthesia').value : 'Local Infiltration (1% Lidocaine w/ Epi)';
+  const notes = patient.notes || '';
+
+  const queueNumber = `Q-${100 + state.queue.length + state.completed.length + 1}`;
+
+  const queueItem = {
+    id: 'queue-' + Date.now(),
+    queueNumber,
+    patientId: patient.id,
+    patientName: patient.fullName,
+    mrn: patient.mrn,
+    age: patient.age,
+    gender: patient.gender,
+    allergies: patient.allergies,
+    procedure,
+    surgeon,
+    room,
+    priority,
+    anesthesia,
+    notes,
+    status: 'waiting',
+    queuedAt: new Date().toISOString(),
+    startedAt: null,
+    completedAt: null
+  };
+
+  state.queue.push(queueItem);
+  saveState();
+  renderAll();
+
+  resetPatientSelection();
+  closeModal(document.getElementById('modalQueue'));
+  document.getElementById('navQueueTab').click();
+
+  showToast(`Added ${patient.fullName} (${patient.mrn}) to Surgery Queue as ${queueNumber}!`, 'success');
+};
+
+/**
+ * Execute Add Selected Patient to Queue (from Selected Card Action button or Submit button)
+ */
+function executeAddSelectedPatientToQueue() {
+  const patientId = document.getElementById('queueSelectedPatientId').value;
+  const patient = state.patients.find(p => p.id === patientId);
+  const errorHint = document.getElementById('patientSelectError');
+
+  if (!patientId || !patient) {
+    if (errorHint) errorHint.classList.remove('hidden');
+    showToast('Please search and select a patient from the patient list', 'error');
+    return false;
+  }
+  if (errorHint) errorHint.classList.add('hidden');
+
+  const existing = state.queue.find(q => q.patientId === patientId);
+  if (existing) {
+    showToast(`Patient is already queued under case ${existing.queueNumber}`, 'error');
+    return false;
+  }
+
+  // Procedure
+  const quickProc = document.getElementById('queueQuickProcedure');
+  const mainProc = document.getElementById('queueProcedure');
+  let procedure = (quickProc && quickProc.value) ? quickProc.value : (mainProc && mainProc.value ? mainProc.value : 'Abscess Incision & Drainage');
+  if (procedure === 'Other Minor Surgical Procedure') {
+    const customProc = document.getElementById('queueCustomProcedure');
+    procedure = (customProc && customProc.value.trim()) ? customProc.value.trim() : 'Minor Surgery';
+  }
+
+  // Priority
+  const quickPriority = document.getElementById('queueQuickPriority');
+  const mainPriority = document.getElementById('queuePriority');
+  const priority = (quickPriority && quickPriority.value) ? quickPriority.value : (mainPriority && mainPriority.value ? mainPriority.value : 'Standard');
+
+  // Surgeon & Suite
+  let surgeon = document.getElementById('queueSurgeon') ? document.getElementById('queueSurgeon').value : '';
+  if (!surgeon && state.surgeons.length > 0) surgeon = state.surgeons[0].name;
+
+  let room = document.getElementById('queueRoom') ? document.getElementById('queueRoom').value : '';
+  if (!room && state.rooms.length > 0) room = state.rooms[0].name;
+
+  const anesthesia = document.getElementById('queueAnesthesia') ? document.getElementById('queueAnesthesia').value : 'Local Infiltration (1% Lidocaine w/ Epi)';
+  const notes = document.getElementById('queueNotes') ? document.getElementById('queueNotes').value.trim() : (patient.notes || '');
+
+  const queueNumber = `Q-${100 + state.queue.length + state.completed.length + 1}`;
+
+  const queueItem = {
+    id: 'queue-' + Date.now(),
+    queueNumber,
+    patientId: patient.id,
+    patientName: patient.fullName,
+    mrn: patient.mrn,
+    age: patient.age,
+    gender: patient.gender,
+    allergies: patient.allergies,
+    procedure,
+    surgeon,
+    room,
+    priority,
+    anesthesia,
+    notes,
+    status: 'waiting',
+    queuedAt: new Date().toISOString(),
+    startedAt: null,
+    completedAt: null
+  };
+
+  state.queue.push(queueItem);
+  saveState();
+  renderAll();
+
+  resetPatientSelection();
+  closeModal(document.getElementById('modalQueue'));
+  document.getElementById('navQueueTab').click();
+
+  showToast(`Added ${patient.fullName} (${patient.mrn}) to Surgery Queue as ${queueNumber}!`, 'success');
+  return true;
 }
 
 window.onSelectPatientResult = function(patientId) {
@@ -1072,6 +1288,21 @@ function selectPatientForQueue(patientId) {
   }
   if (notesEl) notesEl.textContent = patient.notes || 'No pre-op assessment notes recorded.';
 
+  // Sync quick controls with main controls
+  const quickProc = document.getElementById('queueQuickProcedure');
+  const mainProc = document.getElementById('queueProcedure');
+  if (quickProc && mainProc) {
+    if (!mainProc.value) mainProc.value = 'Abscess Incision & Drainage';
+    quickProc.value = mainProc.value;
+  }
+
+  const quickPriority = document.getElementById('queueQuickPriority');
+  const mainPriority = document.getElementById('queuePriority');
+  if (quickPriority && mainPriority) {
+    if (!mainPriority.value) mainPriority.value = 'Standard';
+    quickPriority.value = mainPriority.value;
+  }
+
   // Swap views
   if (searchContainer) searchContainer.classList.add('hidden');
   if (resultsContainer) resultsContainer.classList.add('hidden');
@@ -1088,6 +1319,7 @@ function resetPatientSelection() {
   const selectedCard = document.getElementById('selectedPatientCard');
   const searchInput = document.getElementById('queuePatientSearchInput');
   const btnClear = document.getElementById('btnClearPatientSearch');
+  const resultsContainer = document.getElementById('patientSearchResults');
 
   if (hiddenInput) hiddenInput.value = '';
   if (selectedCard) selectedCard.classList.add('hidden');
@@ -1098,6 +1330,7 @@ function resetPatientSelection() {
   }
   if (btnClear) btnClear.classList.add('hidden');
   renderPatientSearchResults('');
+  if (resultsContainer) resultsContainer.classList.remove('hidden');
 }
 
 function openModal(modalEl) {
@@ -1140,6 +1373,21 @@ function openQueueModal(preselectedPatientId = null) {
   }
 
   openModal(modalQueue);
+
+  // Autofocus the search input box immediately so user can search right away
+  if (!preselectedPatientId) {
+    setTimeout(() => {
+      const searchInput = document.getElementById('queuePatientSearchInput');
+      const resultsContainer = document.getElementById('patientSearchResults');
+      if (searchInput) {
+        searchInput.focus();
+        renderPatientSearchResults('');
+      }
+      if (resultsContainer) {
+        resultsContainer.classList.remove('hidden');
+      }
+    }, 80);
+  }
 }
 
 window.quickQueuePatient = function(patientId) {
@@ -1350,16 +1598,26 @@ function initForms() {
         }
       }
 
-      let procedure = document.getElementById('queueProcedure').value;
+      const quickProc = document.getElementById('queueQuickProcedure');
+      const mainProc = document.getElementById('queueProcedure');
+      let procedure = (quickProc && quickProc.value) ? quickProc.value : (mainProc && mainProc.value ? mainProc.value : 'Abscess Incision & Drainage');
       if (procedure === 'Other Minor Surgical Procedure') {
-        procedure = document.getElementById('queueCustomProcedure').value.trim() || 'Minor Surgery';
+        const customProc = document.getElementById('queueCustomProcedure');
+        procedure = (customProc && customProc.value.trim()) ? customProc.value.trim() : 'Minor Surgery';
       }
 
-      const surgeon = document.getElementById('queueSurgeon').value;
-      const room = document.getElementById('queueRoom').value;
-      const priority = document.getElementById('queuePriority').value;
-      const anesthesia = document.getElementById('queueAnesthesia').value;
-      const notes = document.getElementById('queueNotes').value.trim();
+      const quickPriority = document.getElementById('queueQuickPriority');
+      const mainPriority = document.getElementById('queuePriority');
+      const priority = (quickPriority && quickPriority.value) ? quickPriority.value : (mainPriority && mainPriority.value ? mainPriority.value : 'Standard');
+
+      let surgeon = document.getElementById('queueSurgeon') ? document.getElementById('queueSurgeon').value : '';
+      if (!surgeon && state.surgeons.length > 0) surgeon = state.surgeons[0].name;
+
+      let room = document.getElementById('queueRoom') ? document.getElementById('queueRoom').value : '';
+      if (!room && state.rooms.length > 0) room = state.rooms[0].name;
+
+      const anesthesia = document.getElementById('queueAnesthesia') ? document.getElementById('queueAnesthesia').value : 'Local Infiltration (1% Lidocaine w/ Epi)';
+      const notes = document.getElementById('queueNotes') ? document.getElementById('queueNotes').value.trim() : (patient.notes || '');
 
       // Generate Queue Number (e.g., Q-104)
       const queueNumber = `Q-${100 + state.queue.length + state.completed.length + 1}`;
