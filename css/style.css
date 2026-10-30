@@ -311,6 +311,77 @@ body.dark-mode .theme-toggle-btn:hover {
 }
 
 /* ===================================================================
+   BILINGUAL LANGUAGE SWITCHER & KHMER TYPOGRAPHY
+   =================================================================== */
+body.lang-km {
+  font-family: 'Kantumruy Pro', var(--font-sans);
+  line-height: 1.6;
+}
+
+body.lang-km button,
+body.lang-km input,
+body.lang-km select,
+body.lang-km textarea,
+body.lang-km .page-title,
+body.lang-km .brand-title,
+body.lang-km .sub-heading {
+  font-family: 'Kantumruy Pro', var(--font-sans);
+}
+
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius-md) - 3px);
+  padding: 4px 9px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.lang-btn:hover {
+  color: var(--heading-color);
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.lang-btn.active {
+  background: var(--bg-card);
+  color: var(--teal-primary);
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+}
+
+body.dark-mode .lang-btn.active {
+  background: var(--bg-card-hover);
+  color: var(--teal-primary);
+}
+
+.lang-flag {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.lang-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+}
+
+/* ===================================================================
    BUTTONS
    =================================================================== */
 .btn {

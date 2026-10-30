@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300..700;1,300..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -30,10 +30,10 @@
       </div>
       <div class="brand-text">
         <div class="brand-title">
-          <span>SURGIFLOW</span>
-          <span class="badge-tag">Minor OR v1.2</span>
+          <span data-i18n="app_title">SURGIFLOW</span>
+          <span class="badge-tag" data-i18n="app_tag">Minor OR v1.2</span>
         </div>
-        <p class="brand-subtitle">Outpatient Surgery & Minor Operating Suite</p>
+        <p class="brand-subtitle" data-i18n="app_subtitle">Outpatient Surgery & Minor Operating Suite</p>
       </div>
     </div>
 
@@ -42,25 +42,37 @@
       <div class="metric-pill">
         <span class="metric-dot waiting"></span>
         <span class="metric-num" id="metricWaitingCount">0</span>
-        <span class="metric-name">Waiting</span>
+        <span class="metric-name" data-i18n="metric_waiting">Waiting</span>
       </div>
       <div class="metric-pill">
         <span class="metric-dot active"></span>
         <span class="metric-num" id="metricActiveCount">0</span>
-        <span class="metric-name">In OR</span>
+        <span class="metric-name" data-i18n="metric_in_or">In OR</span>
       </div>
       <div class="metric-pill">
         <span class="metric-dot completed"></span>
         <span class="metric-num" id="metricCompletedCount">0</span>
-        <span class="metric-name">Completed</span>
+        <span class="metric-name" data-i18n="metric_completed">Completed</span>
       </div>
     </div>
 
     <!-- Header Actions -->
     <div class="header-actions">
+      <!-- Language Switcher: English / ភាសាខ្មែរ -->
+      <div class="lang-switcher" id="langSwitcher" role="group" aria-label="Language selection">
+        <button type="button" class="lang-btn active" data-lang="en" id="btnLangEn" title="English">
+          <span class="lang-flag">🇬🇧</span>
+          <span>EN</span>
+        </button>
+        <button type="button" class="lang-btn" data-lang="km" id="btnLangKm" title="ភាសាខ្មែរ">
+          <span class="lang-flag">🇰🇭</span>
+          <span>ខ្មែរ</span>
+        </button>
+      </div>
+
       <button class="btn btn-secondary theme-toggle-btn" id="btnToggleTheme" title="Toggle Light / Dark Mode">
         <span class="theme-icon" id="themeIcon">☀️</span>
-        <span class="theme-text" id="themeText">Light</span>
+        <span class="theme-text" id="themeText" data-i18n="theme_light">Light</span>
       </button>
       <button class="btn btn-secondary" id="btnLoadDemo" title="Populate realistic demo records">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
@@ -69,7 +81,7 @@
           <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
           <path d="M16 21h5v-5" />
         </svg>
-        <span>Demo Data</span>
+        <span data-i18n="btn_demo">Demo Data</span>
       </button>
       <button class="btn btn-primary" id="btnOpenNewPatientModal">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
@@ -78,13 +90,13 @@
           <line x1="19" y1="8" x2="19" y2="14" />
           <line x1="22" y1="11" x2="16" y2="11" />
         </svg>
-        <span>Register Patient</span>
+        <span data-i18n="btn_register_patient">Register Patient</span>
       </button>
       <button class="btn btn-accent" id="btnOpenQueueModal">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 5v14M5 12h14" />
         </svg>
-        <span>Queue for Surgery</span>
+        <span data-i18n="btn_queue_surgery">Queue for Surgery</span>
       </button>
     </div>
   </header>
@@ -101,7 +113,7 @@
             <rect x="14" y="12" width="7" height="9" />
             <rect x="3" y="16" width="7" height="5" />
           </svg>
-          <span>Surgery Queue</span>
+          <span data-i18n="nav_queue">Surgery Queue</span>
           <span class="nav-badge" id="navQueueBadge">0</span>
         </button>
 
@@ -112,7 +124,7 @@
             <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
-          <span>Patient List</span>
+          <span data-i18n="nav_patients">Patient List</span>
           <span class="nav-badge muted" id="navPatientBadge">0</span>
         </button>
 
@@ -121,7 +133,7 @@
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
             <polyline points="22 4 12 14.01 9 11.01" />
           </svg>
-          <span>Completed Cases</span>
+          <span data-i18n="nav_completed">Completed Cases</span>
           <span class="nav-badge muted" id="navCompletedBadge">0</span>
         </button>
 
@@ -130,7 +142,7 @@
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             <polyline points="9 22 9 12 15 12 15 22" />
           </svg>
-          <span>OR Suites & Doctors</span>
+          <span data-i18n="nav_rooms">OR Suites & Doctors</span>
         </button>
       </nav>
 
@@ -138,7 +150,7 @@
       <div class="sidebar-status-card">
         <div class="status-card-header">
           <span class="pulse-indicator"></span>
-          <h4>OR Availability</h4>
+          <h4 data-i18n="or_availability">OR Availability</h4>
         </div>
         <div class="room-status-list" id="sidebarRoomList">
           <!-- Populated by JS -->
@@ -146,7 +158,7 @@
       </div>
 
       <div class="sidebar-footer">
-        <p class="text-xs text-muted">System Time: <span id="liveClock" class="font-mono">--:--:--</span></p>
+        <p class="text-xs text-muted"><span data-i18n="system_time">System Time:</span> <span id="liveClock" class="font-mono">--:--:--</span></p>
       </div>
     </aside>
 
@@ -158,8 +170,8 @@
         <!-- Controls Bar -->
         <div class="section-toolbar">
           <div class="toolbar-left">
-            <h1 class="page-title">Active Minor Surgery Queue</h1>
-            <p class="page-subtitle">Track, call to OR, and complete queued outpatient surgical procedures</p>
+            <h1 class="page-title" data-i18n="queue_title">Active Minor Surgery Queue</h1>
+            <p class="page-subtitle" data-i18n="queue_subtitle">Track, call to OR, and complete queued outpatient surgical procedures</p>
           </div>
           <div class="toolbar-right">
             <!-- Add to Queue button directly in Surgery Queue view -->
@@ -167,26 +179,26 @@
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 5v14M5 12h14" />
               </svg>
-              <span>Add Patient to Queue</span>
+              <span data-i18n="btn_add_to_queue">Add Patient to Queue</span>
             </button>
 
             <!-- Filter by Status -->
             <div class="segmented-control" id="queueStatusFilter">
-              <button class="segment-btn active" data-filter="all">All Cases (<span
+              <button class="segment-btn active" data-filter="all"><span data-i18n="filter_all">All Cases</span> (<span
                   id="countFilterAll">0</span>)</button>
-              <button class="segment-btn" data-filter="waiting">Waiting (<span
+              <button class="segment-btn" data-filter="waiting"><span data-i18n="filter_waiting">Waiting</span> (<span
                   id="countFilterWaiting">0</span>)</button>
-              <button class="segment-btn" data-filter="in_progress">In Surgery (<span
+              <button class="segment-btn" data-filter="in_progress"><span data-i18n="filter_in_progress">In Surgery</span> (<span
                   id="countFilterInProgress">0</span>)</button>
             </div>
 
             <!-- Priority filter -->
             <select class="input-select" id="queuePriorityFilter">
-              <option value="all">All Priorities</option>
-              <option value="Urgent">Urgent / STAT</option>
-              <option value="High">High</option>
-              <option value="Standard">Standard</option>
-              <option value="Elective">Elective</option>
+              <option value="all" data-i18n="priority_all">All Priorities</option>
+              <option value="Urgent" data-i18n="priority_urgent">Urgent / STAT</option>
+              <option value="High" data-i18n="priority_high">High</option>
+              <option value="Standard" data-i18n="priority_standard">Standard</option>
+              <option value="Elective" data-i18n="priority_elective">Elective</option>
             </select>
 
             <!-- Search box -->
@@ -195,7 +207,7 @@
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-              <input type="text" id="queueSearchInput" placeholder="Search patient, MRN, procedure...">
+              <input type="text" id="queueSearchInput" placeholder="Search patient, MRN, procedure..." data-i18n-placeholder="placeholder_search_queue">
             </div>
           </div>
         </div>
@@ -203,12 +215,12 @@
         <!-- Live Queue Grid / List -->
         <div class="queue-container">
           <div class="queue-header-row">
-            <span class="col-case">Queue # & Patient</span>
-            <span class="col-proc">Procedure & Surgeon</span>
-            <span class="col-room">Suite & Anesthesia</span>
-            <span class="col-priority">Priority</span>
-            <span class="col-status">Status & Timing</span>
-            <span class="col-actions">Actions</span>
+            <span class="col-case" data-i18n="th_queue_patient">Queue # & Patient</span>
+            <span class="col-proc" data-i18n="th_procedure_surgeon">Procedure & Surgeon</span>
+            <span class="col-room" data-i18n="th_room_anesthesia">Suite & Anesthesia</span>
+            <span class="col-priority" data-i18n="th_priority">Priority</span>
+            <span class="col-status" data-i18n="th_status_timing">Status & Timing</span>
+            <span class="col-actions" data-i18n="th_actions">Actions</span>
           </div>
 
           <div class="queue-list" id="queueListContainer">
@@ -223,14 +235,14 @@
                 <path d="m9 12 2 2 4-4" />
               </svg>
             </div>
-            <h3>No Active Surgery Cases in Queue</h3>
-            <p>Queue a registered patient or click "Demo Data" above to quickly simulate patients and surgery cases.</p>
+            <h3 data-i18n="empty_queue_title">No Active Surgery Cases in Queue</h3>
+            <p data-i18n="empty_queue_desc">Queue a registered patient or click "Demo Data" above to quickly simulate patients and surgery cases.</p>
             <div class="empty-actions">
               <button class="btn btn-accent" id="emptyBtnQueue">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M12 5v14M5 12h14" />
                 </svg>
-                Queue Patient Now
+                <span data-i18n="btn_queue_now">Queue Patient Now</span>
               </button>
             </div>
           </div>
@@ -241,8 +253,8 @@
       <section class="tab-pane" id="tab-patients">
         <div class="section-toolbar">
           <div class="toolbar-left">
-            <h2 class="page-title">Patient List</h2>
-            <p class="page-subtitle">View outpatient records, register new patients, and manage patient details</p>
+            <h2 class="page-title" data-i18n="patients_title">Patient List</h2>
+            <p class="page-subtitle" data-i18n="patients_subtitle">View outpatient records, register new patients, and manage patient details</p>
           </div>
           <div class="toolbar-right">
             <div class="search-box">
@@ -250,7 +262,7 @@
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-              <input type="text" id="patientSearchInput" placeholder="Search by name, MRN, phone...">
+              <input type="text" id="patientSearchInput" placeholder="Search by name, MRN, phone..." data-i18n-placeholder="placeholder_search_patient">
             </div>
             <button class="btn btn-primary" id="btnRegisterNewPatientAlt">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
@@ -259,7 +271,7 @@
                 <line x1="19" y1="8" x2="19" y2="14" />
                 <line x1="22" y1="11" x2="16" y2="11" />
               </svg>
-              New Patient
+              <span data-i18n="btn_new_patient">New Patient</span>
             </button>
           </div>
         </div>
@@ -268,12 +280,12 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>MRN</th>
-                <th>Patient Details</th>
-                <th>Demographics</th>
-                <th>Allergies & Clinical Notes</th>
-                <th>Surgery Status</th>
-                <th style="text-align: right;">Action</th>
+                <th data-i18n="th_mrn">MRN</th>
+                <th data-i18n="th_patient_details">Patient Details</th>
+                <th data-i18n="th_demographics">Demographics</th>
+                <th data-i18n="th_allergies_notes">Allergies & Clinical Notes</th>
+                <th data-i18n="th_surgery_status">Surgery Status</th>
+                <th style="text-align: right;" data-i18n="th_action">Action</th>
               </tr>
             </thead>
             <tbody id="patientTableBody">
@@ -281,7 +293,7 @@
             </tbody>
           </table>
           <div class="empty-state hidden" id="patientsEmptyState">
-            <p>No patients registered yet. Add a patient above to get started.</p>
+            <p data-i18n="empty_patients_desc">No patients registered yet. Add a patient above to get started.</p>
           </div>
         </div>
       </section>
@@ -290,9 +302,8 @@
       <section class="tab-pane" id="tab-completed">
         <div class="section-toolbar">
           <div class="toolbar-left">
-            <h2 class="page-title">Completed Surgery Cases</h2>
-            <p class="page-subtitle">Historical log of finished small surgeries, procedure durations, and post-op
-              outcomes</p>
+            <h2 class="page-title" data-i18n="completed_title">Completed Surgery Cases</h2>
+            <p class="page-subtitle" data-i18n="completed_subtitle">Historical log of finished small surgeries, procedure durations, and post-op outcomes</p>
           </div>
           <div class="toolbar-right">
             <button class="btn btn-secondary" id="btnExportCSV">
@@ -301,14 +312,14 @@
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Export CSV
+              <span data-i18n="btn_export_csv">Export CSV</span>
             </button>
             <div class="search-box">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-              <input type="text" id="completedSearchInput" placeholder="Filter completed records...">
+              <input type="text" id="completedSearchInput" placeholder="Filter completed records..." data-i18n-placeholder="placeholder_search_completed">
             </div>
           </div>
         </div>
@@ -317,13 +328,13 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>Case # & Time</th>
-                <th>Patient</th>
-                <th>Procedure</th>
-                <th>Surgeon & OR</th>
-                <th>Duration</th>
-                <th>Post-Op Notes & Specimen</th>
-                <th style="text-align: right;">Summary</th>
+                <th data-i18n="th_case_time">Case # & Time</th>
+                <th data-i18n="th_patient">Patient</th>
+                <th data-i18n="th_procedure">Procedure</th>
+                <th data-i18n="th_surgeon_room">Surgeon & OR</th>
+                <th data-i18n="th_duration">Duration</th>
+                <th data-i18n="th_postop_specimen">Post-Op Notes & Specimen</th>
+                <th style="text-align: right;" data-i18n="th_summary">Summary</th>
               </tr>
             </thead>
             <tbody id="completedTableBody">
@@ -331,7 +342,7 @@
             </tbody>
           </table>
           <div class="empty-state hidden" id="completedEmptyState">
-            <p>No surgery cases completed yet today.</p>
+            <p data-i18n="empty_completed_desc">No surgery cases completed yet today.</p>
           </div>
         </div>
       </section>
@@ -340,8 +351,8 @@
       <section class="tab-pane" id="tab-rooms">
         <div class="section-toolbar">
           <div class="toolbar-left">
-            <h2 class="page-title">Minor OR Suites & Medical Staff</h2>
-            <p class="page-subtitle">Real-time status of procedure rooms and attending surgical practitioners</p>
+            <h2 class="page-title" data-i18n="rooms_title">Minor OR Suites & Medical Staff</h2>
+            <p class="page-subtitle" data-i18n="rooms_subtitle">Real-time status of procedure rooms and attending surgical practitioners</p>
           </div>
         </div>
 
@@ -350,7 +361,7 @@
         </div>
 
         <div class="surgeons-section">
-          <h3 class="sub-heading">Attending Surgeons & Practitioners</h3>
+          <h3 class="sub-heading" data-i18n="surgeons_heading">Attending Surgeons & Practitioners</h3>
           <div class="surgeons-grid" id="surgeonsGridContainer">
             <!-- Rendered by JS -->
           </div>
@@ -373,8 +384,8 @@
             </svg>
           </div>
           <div>
-            <h3>New Patient Registration</h3>
-            <p>Register a patient into the outpatient medical database</p>
+            <h3 data-i18n="modal_patient_title">Register Patient for Minor Surgery</h3>
+            <p data-i18n="modal_patient_sub">Enter outpatient identity, demographics, blood type, and allergy history</p>
           </div>
         </div>
         <button class="modal-close" id="btnClosePatientModal">&times;</button>
@@ -383,32 +394,32 @@
       <form id="formRegisterPatient">
         <div class="form-grid">
           <div class="form-group full-width">
-            <label for="regFullName">Full Name *</label>
-            <input type="text" id="regFullName" required placeholder="e.g. Eleanor Vance">
+            <label for="regFullName" data-i18n="label_full_name">Patient Full Name *</label>
+            <input type="text" id="regFullName" required placeholder="e.g. Eleanor Vance" data-i18n-placeholder="placeholder_name">
           </div>
 
           <div class="form-group">
-            <label for="regAge">Age *</label>
+            <label for="regAge" data-i18n="label_age">Age *</label>
             <input type="number" id="regAge" min="1" max="120" required placeholder="e.g. 34">
           </div>
 
           <div class="form-group">
-            <label for="regGender">Gender *</label>
+            <label for="regGender" data-i18n="label_gender">Gender *</label>
             <select id="regGender" required>
-              <option value="">Select Gender</option>
-              <option value="Female">Female</option>
-              <option value="Male">Male</option>
-              <option value="Other">Other</option>
+              <option value="" data-i18n="select_gender">Select Gender</option>
+              <option value="Female" data-i18n="opt_female">Female</option>
+              <option value="Male" data-i18n="opt_male">Male</option>
+              <option value="Other" data-i18n="opt_other">Other</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="regPhone">Contact Phone *</label>
+            <label for="regPhone" data-i18n="label_phone">Contact Phone *</label>
             <input type="tel" id="regPhone" required placeholder="e.g. +1 (555) 019-2834">
           </div>
 
           <div class="form-group">
-            <label for="regBloodType">Blood Type</label>
+            <label for="regBloodType" data-i18n="label_blood_type">Blood Type</label>
             <select id="regBloodType">
               <option value="Unknown">Unknown</option>
               <option value="A+">A+</option>
@@ -423,20 +434,20 @@
           </div>
 
           <div class="form-group full-width">
-            <label for="regAllergies">Known Allergies / Alerts</label>
-            <input type="text" id="regAllergies" placeholder="e.g. Penicillin, Latex, Lidocaine (or type 'NKDA')">
+            <label for="regAllergies" data-i18n="label_allergies">Known Allergies / Medical Alerts</label>
+            <input type="text" id="regAllergies" placeholder="e.g. Penicillin, Latex (or type 'NKDA')" data-i18n-placeholder="placeholder_allergies">
           </div>
 
           <div class="form-group full-width">
-            <label for="regNotes">Initial Medical History / Pre-Op Assessment</label>
+            <label for="regNotes" data-i18n="label_preop_notes">Pre-Op Assessment / Medical History</label>
             <textarea id="regNotes" rows="2"
-              placeholder="Brief history, chronic illnesses (Hypertension, Diabetes), current anticoagulants..."></textarea>
+              placeholder="Brief medical history, chronic conditions, current medication..." data-i18n-placeholder="placeholder_patient_notes"></textarea>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" id="btnCancelPatientModal">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="btnSubmitPatient">Save & Register</button>
+          <button type="button" class="btn btn-secondary" id="btnCancelPatientModal" data-i18n="btn_cancel_text">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitPatient" data-i18n="btn_confirm_register">Confirm & Register</button>
         </div>
       </form>
     </div>
@@ -455,10 +466,10 @@
           </div>
           <div>
             <div style="display:flex; align-items:center; gap:0.5rem;">
-              <h3>Edit Patient Record</h3>
+              <h3 data-i18n="modal_edit_title">Edit Patient Record</h3>
               <span class="mrn-badge font-mono" id="editPatientMRNBadge">MRN-XXXX</span>
             </div>
-            <p>Update patient demographic details, clinical alerts, and history</p>
+            <p data-i18n="modal_edit_sub">Update patient demographic details, clinical alerts, and history</p>
           </div>
         </div>
         <button class="modal-close" id="btnCloseEditPatientModal">&times;</button>
@@ -469,32 +480,32 @@
 
         <div class="form-grid">
           <div class="form-group full-width">
-            <label for="editFullName">Full Name *</label>
-            <input type="text" id="editFullName" required placeholder="e.g. Eleanor Vance">
+            <label for="editFullName" data-i18n="label_full_name">Patient Full Name *</label>
+            <input type="text" id="editFullName" required placeholder="e.g. Eleanor Vance" data-i18n-placeholder="placeholder_name">
           </div>
 
           <div class="form-group">
-            <label for="editAge">Age *</label>
+            <label for="editAge" data-i18n="label_age">Age *</label>
             <input type="number" id="editAge" min="1" max="120" required placeholder="e.g. 34">
           </div>
 
           <div class="form-group">
-            <label for="editGender">Gender *</label>
+            <label for="editGender" data-i18n="label_gender">Gender *</label>
             <select id="editGender" required>
-              <option value="">Select Gender</option>
-              <option value="Female">Female</option>
-              <option value="Male">Male</option>
-              <option value="Other">Other</option>
+              <option value="" data-i18n="select_gender">Select Gender</option>
+              <option value="Female" data-i18n="opt_female">Female</option>
+              <option value="Male" data-i18n="opt_male">Male</option>
+              <option value="Other" data-i18n="opt_other">Other</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="editPhone">Contact Phone *</label>
+            <label for="editPhone" data-i18n="label_phone">Contact Phone *</label>
             <input type="tel" id="editPhone" required placeholder="e.g. +1 (555) 019-2834">
           </div>
 
           <div class="form-group">
-            <label for="editBloodType">Blood Type</label>
+            <label for="editBloodType" data-i18n="label_blood_type">Blood Type</label>
             <select id="editBloodType">
               <option value="Unknown">Unknown</option>
               <option value="A+">A+</option>
@@ -509,23 +520,23 @@
           </div>
 
           <div class="form-group full-width">
-            <label for="editAllergies">Known Allergies / Alerts</label>
-            <input type="text" id="editAllergies" placeholder="e.g. Penicillin, Latex, Lidocaine (or type 'NKDA')">
+            <label for="editAllergies" data-i18n="label_allergies">Known Allergies / Medical Alerts</label>
+            <input type="text" id="editAllergies" placeholder="e.g. Penicillin, Latex, Lidocaine (or type 'NKDA')" data-i18n-placeholder="placeholder_allergies">
           </div>
 
           <div class="form-group full-width">
-            <label for="editNotes">Medical History / Pre-Op Assessment</label>
-            <textarea id="editNotes" rows="2" placeholder="Brief history, chronic illnesses, medications..."></textarea>
+            <label for="editNotes" data-i18n="label_preop_notes">Pre-Op Assessment / Medical History</label>
+            <textarea id="editNotes" rows="2" placeholder="Brief history, chronic illnesses, medications..." data-i18n-placeholder="placeholder_patient_notes"></textarea>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" id="btnCancelEditPatientModal">Cancel</button>
+          <button type="button" class="btn btn-secondary" id="btnCancelEditPatientModal" data-i18n="btn_cancel_text">Cancel</button>
           <button type="submit" class="btn btn-primary" id="btnSubmitEditPatient">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="20 6 9 17 4 12" />
             </svg>
-            Update Patient Details
+            <span data-i18n="btn_save_changes">Save Changes</span>
           </button>
         </div>
       </form>
@@ -543,8 +554,8 @@
             </svg>
           </div>
           <div>
-            <h3>Queue Patient for Minor Surgery</h3>
-            <p>Search a patient from Patient List and add to queue with 1 click</p>
+            <h3 data-i18n="modal_queue_title">Queue Patient for Minor Surgery</h3>
+            <p data-i18n="modal_queue_sub">Search a patient from Patient List and add to queue with 1 click</p>
           </div>
         </div>
         <button class="modal-close" id="btnCloseQueueModal">&times;</button>
@@ -555,7 +566,7 @@
         <div class="form-section-divider full-width">
           <div class="form-section-title">
             <span class="step-badge">1</span>
-            <span>Search Patient from Patient List</span>
+            <span data-i18n="label_search_patient">Search Patient from Patient List</span>
           </div>
         </div>
 
@@ -566,7 +577,7 @@
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
-            <span>Search Existing Patient</span>
+            <span data-i18n="mode_search_existing">Search Existing Patient</span>
           </button>
           <button type="button" class="mode-toggle-btn" id="btnModeWalkin" data-mode="walkin">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
@@ -575,7 +586,7 @@
               <line x1="19" y1="8" x2="19" y2="14" />
               <line x1="22" y1="11" x2="16" y2="11" />
             </svg>
-            <span>+ New Walk-in Patient (All-in-One)</span>
+            <span data-i18n="mode_walkin">+ New Walk-in Patient (All-in-One)</span>
           </button>
         </div>
 
@@ -588,8 +599,8 @@
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
-                <span>Search Patient from Patient List *</span>
-                <span class="search-sub-hint">(Select below or type to filter)</span>
+                <span data-i18n="label_search_patient">Search Patient from Patient List *</span>
+                <span class="search-sub-hint" data-i18n="search_sub_hint">(Select below or type to filter)</span>
               </label>
               <button type="button" class="btn-link-action" id="btnSwitchToWalkinFromSearch">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
@@ -598,7 +609,7 @@
                   <line x1="19" y1="8" x2="19" y2="14" />
                   <line x1="22" y1="11" x2="16" y2="11" />
                 </svg>
-                <span>Walk-in Patient? Enter Details Directly</span>
+                <span data-i18n="btn_walkin_link">Walk-in Patient? Enter Details Directly</span>
               </button>
             </div>
 
@@ -610,210 +621,81 @@
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
                 <input type="text" id="queuePatientSearchInput"
-                  placeholder="Type patient name, MRN, or phone number to search list..." autocomplete="off">
+                  placeholder="Type patient name, MRN, or phone number to search list..." data-i18n-placeholder="placeholder_queue_search" autocomplete="off">
                 <button type="button" class="btn-clear-search hidden" id="btnClearPatientSearch"
                   title="Clear search">&times;</button>
               </div>
 
               <!-- Live matching dropdown list -->
-                <div class="patient-search-dropdown" id="patientSearchResults">
-                  <!-- Dynamically rendered list items with + Add to Queue button -->
+              <div class="patient-search-dropdown" id="patientSearchResults">
+                <!-- Dynamically rendered list items with + Add to Queue button -->
+              </div>
+            </div>
+
+            <!-- Hidden input to store chosen patient ID -->
+            <input type="hidden" id="queueSelectedPatientId">
+
+            <!-- Selected Patient Card (Visible when a patient is selected) -->
+            <div class="selected-patient-card hidden" id="selectedPatientCard">
+              <div class="selected-patient-header">
+                <div class="selected-patient-identity">
+                  <div class="patient-check-avatar">✓</div>
+                  <div>
+                    <div class="selected-patient-name-row">
+                      <h4 class="selected-patient-name" id="selectedPatientName">Eleanor Vance</h4>
+                      <span class="mrn-badge font-mono" id="selectedPatientMRN">MRN-9201</span>
+                    </div>
+                    <div class="selected-patient-meta font-mono">
+                      <span id="selectedPatientDemo">34y / Female</span>
+                      <span>•</span>
+                      <span id="selectedPatientBlood">Blood: O+</span>
+                      <span>•</span>
+                      <span id="selectedPatientPhone">+1 (555) 019-2834</span>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnChangeSelectedPatient">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                  </svg>
+                  <span data-i18n="btn_change_patient">Change Patient</span>
+                </button>
+              </div>
+              <div class="selected-patient-details">
+                <div class="patient-detail-tag">
+                  <strong data-i18n="allergies_label">Allergies:</strong>
+                  <span id="selectedPatientAllergies" class="text-danger">None</span>
+                </div>
+                <div class="patient-detail-tag full">
+                  <strong data-i18n="preop_history_label">Pre-Op History:</strong>
+                  <span id="selectedPatientNotes" class="text-muted">None</span>
                 </div>
               </div>
 
-              <!-- Hidden input to store chosen patient ID -->
-              <input type="hidden" id="queueSelectedPatientId">
-
-              <!-- Selected Patient Card (Visible when a patient is selected) -->
-              <div class="selected-patient-card hidden" id="selectedPatientCard">
-                <div class="selected-patient-header">
-                  <div class="selected-patient-identity">
-                    <div class="patient-check-avatar">✓</div>
-                    <div>
-                      <div class="selected-patient-name-row">
-                        <h4 class="selected-patient-name" id="selectedPatientName">Eleanor Vance</h4>
-                        <span class="mrn-badge font-mono" id="selectedPatientMRN">MRN-9201</span>
-                      </div>
-                      <div class="selected-patient-meta font-mono">
-                        <span id="selectedPatientDemo">34y / Female</span>
-                        <span>•</span>
-                        <span id="selectedPatientBlood">Blood: O+</span>
-                        <span>•</span>
-                        <span id="selectedPatientPhone">+1 (555) 019-2834</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button type="button" class="btn btn-secondary btn-sm" id="btnChangeSelectedPatient">
-                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                      <path d="M3 3v5h5" />
+              <!-- Dedicated Highlighted Action to Add Selected Patient to Queue List -->
+              <div class="selected-patient-queue-action">
+                <div class="quick-queue-header">
+                  <span class="quick-queue-badge">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    Change Patient
-                  </button>
-                </div>
-                <div class="selected-patient-details">
-                  <div class="patient-detail-tag">
-                    <strong>Allergies:</strong>
-                    <span id="selectedPatientAllergies" class="text-danger">None</span>
-                  </div>
-                  <div class="patient-detail-tag full">
-                    <strong>Pre-Op History:</strong>
-                    <span id="selectedPatientNotes" class="text-muted">None</span>
-                  </div>
+                    <span data-i18n="ready_badge">Ready for Surgery Queue</span>
+                  </span>
+                  <span class="text-xs text-muted" data-i18n="ready_sub">Confirm surgical procedure & click button below to add to Queue
+                    list</span>
                 </div>
 
-                <!-- Dedicated Highlighted Action to Add Selected Patient to Queue List -->
-                <div class="selected-patient-queue-action">
-                  <div class="quick-queue-header">
-                    <span class="quick-queue-badge">
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                        stroke-width="2.5">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                      Ready for Surgery Queue
-                    </span>
-                    <span class="text-xs text-muted">Confirm surgical procedure & click button below to add to Queue
-                      list</span>
-                  </div>
-
-                  <div class="quick-queue-controls">
-                    <div class="quick-control-field">
-                      <label for="queueQuickProcedure">Surgical Procedure *</label>
-                      <select id="queueQuickProcedure" class="input-select">
-                        <option value="Abscess Incision & Drainage">Abscess Incision & Drainage</option>
-                        <option value="Lipoma Excision (Subcutaneous)">Lipoma Excision (Subcutaneous)</option>
-                        <option value="Sebaceous Cyst Removal">Sebaceous Cyst Removal</option>
-                        <option value="Wound Debridement & Suturing">Complex Wound Debridement & Primary Suturing
-                        </option>
-                        <option value="Punch / Shave Skin Biopsy">Punch / Shave Skin Biopsy</option>
-                        <option value="Ingrown Toenail Wedge Resection">Ingrown Toenail Partial Matrixectomy</option>
-                        <option value="Foreign Body Removal (Soft Tissue)">Foreign Body Removal (Soft Tissue)</option>
-                        <option value="Scar Revision / Minor Excision">Scar Revision / Minor Excision</option>
-                        <option value="Other Minor Surgical Procedure">Other Minor Surgical Procedure...</option>
-                      </select>
-                    </div>
-
-                    <div class="quick-control-field">
-                      <label for="queueQuickPriority">Case Priority *</label>
-                      <select id="queueQuickPriority" class="input-select">
-                        <option value="Standard">Standard (Routine minor case)</option>
-                        <option value="High">High (Infection, significant pain)</option>
-                        <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
-                        <option value="Elective">Elective (Cosmetic/elective)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="quick-queue-action-buttons">
-                    <button type="button" class="btn btn-accent btn-lg btn-add-selected-now"
-                      id="btnQuickAddSelectedToQueue">
-                      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                        stroke-width="2.2">
-                        <path d="M12 5v14M5 12h14" />
-                      </svg>
-                      <span>Add Selected Patient to Queue List</span>
-                    </button>
-                    <button type="button" class="btn-toggle-options" id="btnToggleOptions">
-                      <span id="toggleOptionsText">⚙️ Show OR Suite & Anesthesia Details</span>
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <polyline points="6 9 12 15 18 9" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="field-error-hint hidden" id="patientSelectError">Please search and select a patient from the
-                patient list before submitting.</div>
-            </div>
-
-            <!-- MODE 2: Direct Walk-in Patient Creation (All-in-One) -->
-            <div class="walkin-form-container full-width hidden" id="walkinPatientSection">
-              <div class="walkin-badge-banner">
-                <div class="walkin-banner-icon">⚡</div>
-                <div class="walkin-banner-text">
-                  <div class="walkin-banner-title">Walk-in Patient Instant Intake</div>
-                  <div class="text-xs text-muted">This patient will be registered into the Patient List and placed in
-                    the Surgery Queue simultaneously.</div>
-                </div>
-                <div class="auto-mrn-pill font-mono" id="walkinMrnPreview">MRN-NEW</div>
-              </div>
-
-              <div class="form-grid walkin-grid">
-                <div class="form-group full-width">
-                  <label for="walkinFullName">Patient Full Name *</label>
-                  <input type="text" id="walkinFullName" placeholder="e.g. Samuel Green">
-                </div>
-
-                <div class="form-group">
-                  <label for="walkinAge">Age *</label>
-                  <input type="number" id="walkinAge" min="1" max="120" placeholder="e.g. 42">
-                </div>
-
-                <div class="form-group">
-                  <label for="walkinGender">Gender *</label>
-                  <select id="walkinGender">
-                    <option value="">Select Gender</option>
-                    <option value="Female">Female</option>
-                    <option value="Male">Male</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="walkinPhone">Contact Phone *</label>
-                  <input type="tel" id="walkinPhone" placeholder="e.g. +1 (555) 304-9821">
-                </div>
-
-                <div class="form-group">
-                  <label for="walkinBloodType">Blood Type</label>
-                  <select id="walkinBloodType">
-                    <option value="Unknown">Unknown</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                  </select>
-                </div>
-
-                <div class="form-group full-width">
-                  <label for="walkinAllergies">Known Allergies / Medical Alerts</label>
-                  <input type="text" id="walkinAllergies" placeholder="e.g. Penicillin, Latex (or type 'NKDA')">
-                </div>
-
-                <div class="form-group full-width">
-                  <label for="walkinNotes">Pre-Op Assessment / Medical History</label>
-                  <textarea id="walkinNotes" rows="2"
-                    placeholder="Brief history, vital signs, fasting status..."></textarea>
-                </div>
-              </div>
-              <div class="field-error-hint hidden" id="walkinFieldError">Please fill in required patient fields (Name,
-                Age, Gender, Phone).</div>
-            </div>
-
-                <!-- Advanced Settings Wrapper (Collapsible for quick search flow, always visible in Walk-in) -->
-                <div class="advanced-queue-settings" id="advancedQueueSettings">
-                  <!-- Section 2: Surgical Procedure & Suite Assignment -->
-                  <div class="form-section-divider full-width">
-                    <div class="form-section-title">
-                      <span class="step-badge">2</span>
-                      <span>Surgical Procedure & Suite Assignment</span>
-                    </div>
-                  </div>
-
-                <div class="form-grid">
-                  <!-- Surgery Procedure -->
-                  <div class="form-group full-width">
-                    <label for="queueProcedure">Surgical Procedure *</label>
-                    <select id="queueProcedure">
+                <div class="quick-queue-controls">
+                  <div class="quick-control-field">
+                    <label for="queueQuickProcedure" data-i18n="label_procedure">Surgical Procedure *</label>
+                    <select id="queueQuickProcedure" class="input-select">
                       <option value="Abscess Incision & Drainage">Abscess Incision & Drainage</option>
                       <option value="Lipoma Excision (Subcutaneous)">Lipoma Excision (Subcutaneous)</option>
                       <option value="Sebaceous Cyst Removal">Sebaceous Cyst Removal</option>
-                      <option value="Wound Debridement & Suturing">Complex Wound Debridement & Primary Suturing</option>
+                      <option value="Wound Debridement & Suturing">Complex Wound Debridement & Primary Suturing
+                      </option>
                       <option value="Punch / Shave Skin Biopsy">Punch / Shave Skin Biopsy</option>
                       <option value="Ingrown Toenail Wedge Resection">Ingrown Toenail Partial Matrixectomy</option>
                       <option value="Foreign Body Removal (Soft Tissue)">Foreign Body Removal (Soft Tissue)</option>
@@ -822,99 +704,227 @@
                     </select>
                   </div>
 
-                  <!-- Custom Procedure Specification if needed -->
-                  <div class="form-group full-width hidden" id="customProcGroup">
-                    <label for="queueCustomProcedure">Custom Procedure Description</label>
-                    <input type="text" id="queueCustomProcedure" placeholder="Specify custom procedure name...">
-                  </div>
-
-                  <!-- Assigned Surgeon -->
-                  <div class="form-group">
-                    <label for="queueSurgeon">Lead Surgeon / Practitioner *</label>
-                    <select id="queueSurgeon">
-                      <!-- Filled dynamically -->
-                    </select>
-                  </div>
-
-                  <!-- Minor OR Suite -->
-                  <div class="form-group">
-                    <label for="queueRoom">Minor OR / Treatment Suite *</label>
-                    <select id="queueRoom">
-                      <!-- Filled dynamically -->
+                  <div class="quick-control-field">
+                    <label for="queueQuickPriority" data-i18n="label_priority">Case Priority *</label>
+                    <select id="queueQuickPriority" class="input-select">
+                      <option value="Standard">Standard (Routine minor case)</option>
+                      <option value="High">High (Infection, significant pain)</option>
+                      <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
+                      <option value="Elective">Elective (Cosmetic/elective)</option>
                     </select>
                   </div>
                 </div>
 
-                    <!-- Section 3: Clinical Priority & Pre-Op Safety -->
-                    <div class="form-section-divider full-width">
-                      <div class="form-section-title">
-                        <span class="step-badge">3</span>
-                        <span>Clinical Priority & Pre-Op Safety</span>
-                      </div>
-                    </div>
-
-                  <div class="form-grid">
-                    <!-- Priority -->
-                    <div class="form-group">
-                      <label for="queuePriority">Case Priority *</label>
-                      <select id="queuePriority">
-                        <option value="Standard">Standard (Routine minor case)</option>
-                        <option value="High">High (Infection, significant pain)</option>
-                        <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
-                        <option value="Elective">Elective (Cosmetic/elective)</option>
-                      </select>
-                    </div>
-
-                    <!-- Anesthesia Type -->
-                    <div class="form-group">
-                      <label for="queueAnesthesia">Anesthesia Type *</label>
-                      <select id="queueAnesthesia">
-                        <option value="Local Infiltration (1% Lidocaine w/ Epi)">Local Infiltration (1% Lidocaine w/
-                          Epi)</option>
-                        <option value="Local Infiltration (Plain Lidocaine)">Local Infiltration (Plain Lidocaine)
-                        </option>
-                        <option value="Digital / Peripheral Nerve Block">Digital / Peripheral Nerve Block</option>
-                        <option value="Topical Anesthesia (EMLA Cream)">Topical Anesthesia (EMLA Cream)</option>
-                        <option value="Field Block Anesthesia">Field Block Anesthesia</option>
-                        <option value="None / Ice & Pressure">None / Cryoanalgesia</option>
-                      </select>
-                    </div>
-
-                    <!-- Clinical Indications / Notes -->
-                    <div class="form-group full-width">
-                      <label for="queueNotes">Surgical Site & Pre-Op Instructions</label>
-                      <textarea id="queueNotes" rows="2"
-                        placeholder="e.g. Left forearm 3cm lesion; marked with surgical pen; sterile draping ready..."></textarea>
-                    </div>
-
-                      <!-- Safety Checklist Acknowledgment -->
-                      <div class="form-group full-width checkbox-row">
-                        <label class="custom-checkbox">
-                          <input type="checkbox" id="queueChecklistConfirm" checked>
-                          <span class="checkmark"></span>
-                          <span class="checkbox-text">Informed consent confirmed & WHO Surgical Safety Site Marking
-                            verified</span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary btn-lg" id="btnCancelQueueModal">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                    Cancel
-                  </button>
-                  <button type="submit" class="btn btn-accent btn-lg" id="btnSubmitQueue">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="quick-queue-action-buttons">
+                  <button type="button" class="btn btn-accent btn-lg btn-add-selected-now"
+                    id="btnQuickAddSelectedToQueue">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                      stroke-width="2.2">
                       <path d="M12 5v14M5 12h14" />
                     </svg>
-                    <span id="btnSubmitQueueText">Add to Queue List</span>
+                    <span data-i18n="btn_add_selected_to_queue">Add Selected Patient to Queue List</span>
+                  </button>
+                  <button type="button" class="btn-toggle-options" id="btnToggleOptions">
+                    <span id="toggleOptionsText">⚙️ Show OR Suite & Anesthesia Details</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
                   </button>
                 </div>
+              </div>
+            </div>
+            <div class="field-error-hint hidden" id="patientSelectError">Please search and select a patient from the
+              patient list before submitting.</div>
+          </div>
+
+          <!-- MODE 2: Direct Walk-in Patient Creation (All-in-One) -->
+          <div class="walkin-form-container full-width hidden" id="walkinPatientSection">
+            <div class="walkin-badge-banner">
+              <div class="walkin-banner-icon">⚡</div>
+              <div class="walkin-banner-text">
+                <div class="walkin-banner-title" data-i18n="walkin_banner_title">Walk-in Patient Instant Intake</div>
+                <div class="text-xs text-muted" data-i18n="walkin_banner_sub">This patient will be registered into the Patient List and placed in
+                  the Surgery Queue simultaneously.</div>
+              </div>
+              <div class="auto-mrn-pill font-mono" id="walkinMrnPreview">MRN-NEW</div>
+            </div>
+
+            <div class="form-grid walkin-grid">
+              <div class="form-group full-width">
+                <label for="walkinFullName" data-i18n="label_full_name">Patient Full Name *</label>
+                <input type="text" id="walkinFullName" placeholder="e.g. Samuel Green" data-i18n-placeholder="placeholder_name">
+              </div>
+
+              <div class="form-group">
+                <label for="walkinAge" data-i18n="label_age">Age *</label>
+                <input type="number" id="walkinAge" min="1" max="120" placeholder="e.g. 42">
+              </div>
+
+              <div class="form-group">
+                <label for="walkinGender" data-i18n="label_gender">Gender *</label>
+                <select id="walkinGender">
+                  <option value="" data-i18n="select_gender">Select Gender</option>
+                  <option value="Female" data-i18n="opt_female">Female</option>
+                  <option value="Male" data-i18n="opt_male">Male</option>
+                  <option value="Other" data-i18n="opt_other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="walkinPhone" data-i18n="label_phone">Contact Phone *</label>
+                <input type="tel" id="walkinPhone" placeholder="e.g. +1 (555) 304-9821">
+              </div>
+
+              <div class="form-group">
+                <label for="walkinBloodType" data-i18n="label_blood_type">Blood Type</label>
+                <select id="walkinBloodType">
+                  <option value="Unknown">Unknown</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="walkinAllergies" data-i18n="label_allergies">Known Allergies / Medical Alerts</label>
+                <input type="text" id="walkinAllergies" placeholder="e.g. Penicillin, Latex (or type 'NKDA')" data-i18n-placeholder="placeholder_allergies">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="walkinNotes" data-i18n="label_preop_notes">Pre-Op Assessment / Medical History</label>
+                <textarea id="walkinNotes" rows="2"
+                  placeholder="Brief history, vital signs, fasting status..." data-i18n-placeholder="placeholder_preop_notes"></textarea>
+              </div>
+            </div>
+            <div class="field-error-hint hidden" id="walkinFieldError">Please fill in required patient fields (Name,
+              Age, Gender, Phone).</div>
+          </div>
+
+          <!-- Advanced Settings Wrapper (Collapsible for quick search flow, always visible in Walk-in) -->
+          <div class="advanced-queue-settings" id="advancedQueueSettings">
+            <!-- Section 2: Surgical Procedure & Suite Assignment -->
+            <div class="form-section-divider full-width">
+              <div class="form-section-title">
+                <span class="step-badge">2</span>
+                <span data-i18n="step2_title">Surgical Procedure & Suite Assignment</span>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <!-- Surgery Procedure -->
+              <div class="form-group full-width">
+                <label for="queueProcedure" data-i18n="label_procedure">Surgical Procedure *</label>
+                <select id="queueProcedure">
+                  <option value="Abscess Incision & Drainage">Abscess Incision & Drainage</option>
+                  <option value="Lipoma Excision (Subcutaneous)">Lipoma Excision (Subcutaneous)</option>
+                  <option value="Sebaceous Cyst Removal">Sebaceous Cyst Removal</option>
+                  <option value="Wound Debridement & Suturing">Complex Wound Debridement & Primary Suturing</option>
+                  <option value="Punch / Shave Skin Biopsy">Punch / Shave Skin Biopsy</option>
+                  <option value="Ingrown Toenail Wedge Resection">Ingrown Toenail Partial Matrixectomy</option>
+                  <option value="Foreign Body Removal (Soft Tissue)">Foreign Body Removal (Soft Tissue)</option>
+                  <option value="Scar Revision / Minor Excision">Scar Revision / Minor Excision</option>
+                  <option value="Other Minor Surgical Procedure">Other Minor Surgical Procedure...</option>
+                </select>
+              </div>
+
+              <!-- Custom Procedure Specification if needed -->
+              <div class="form-group full-width hidden" id="customProcGroup">
+                <label for="queueCustomProcedure">Custom Procedure Description</label>
+                <input type="text" id="queueCustomProcedure" placeholder="Specify custom procedure name...">
+              </div>
+
+              <!-- Assigned Surgeon -->
+              <div class="form-group">
+                <label for="queueSurgeon" data-i18n="label_surgeon">Lead Surgeon / Practitioner *</label>
+                <select id="queueSurgeon">
+                  <!-- Filled dynamically -->
+                </select>
+              </div>
+
+              <!-- Minor OR Suite -->
+              <div class="form-group">
+                <label for="queueRoom" data-i18n="label_room">Minor OR / Treatment Suite *</label>
+                <select id="queueRoom">
+                  <!-- Filled dynamically -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Section 3: Clinical Priority & Pre-Op Safety -->
+            <div class="form-section-divider full-width">
+              <div class="form-section-title">
+                <span class="step-badge">3</span>
+                <span data-i18n="step3_title">Clinical Priority & Pre-Op Safety</span>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <!-- Priority -->
+              <div class="form-group">
+                <label for="queuePriority" data-i18n="label_priority">Case Priority *</label>
+                <select id="queuePriority">
+                  <option value="Standard">Standard (Routine minor case)</option>
+                  <option value="High">High (Infection, significant pain)</option>
+                  <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
+                  <option value="Elective">Elective (Cosmetic/elective)</option>
+                </select>
+              </div>
+
+              <!-- Anesthesia Type -->
+              <div class="form-group">
+                <label for="queueAnesthesia" data-i18n="label_anesthesia">Anesthesia Type *</label>
+                <select id="queueAnesthesia">
+                  <option value="Local Infiltration (1% Lidocaine w/ Epi)">Local Infiltration (1% Lidocaine w/
+                    Epi)</option>
+                  <option value="Local Infiltration (Plain Lidocaine)">Local Infiltration (Plain Lidocaine)
+                  </option>
+                  <option value="Digital / Peripheral Nerve Block">Digital / Peripheral Nerve Block</option>
+                  <option value="Topical Anesthesia (EMLA Cream)">Topical Anesthesia (EMLA Cream)</option>
+                  <option value="Field Block Anesthesia">Field Block Anesthesia</option>
+                  <option value="None / Ice & Pressure">None / Cryoanalgesia</option>
+                </select>
+              </div>
+
+              <!-- Clinical Indications / Notes -->
+              <div class="form-group full-width">
+                <label for="queueNotes" data-i18n="label_notes">Surgical Site & Pre-Op Instructions</label>
+                <textarea id="queueNotes" rows="2"
+                  placeholder="e.g. Left forearm 3cm lesion; marked with surgical pen; sterile draping ready..." data-i18n-placeholder="placeholder_notes"></textarea>
+              </div>
+
+              <!-- Safety Checklist Acknowledgment -->
+              <div class="form-group full-width checkbox-row">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="queueChecklistConfirm" checked>
+                  <span class="checkmark"></span>
+                  <span class="checkbox-text" data-i18n="label_consent_confirm">Informed consent confirmed & WHO Surgical Safety Site Marking
+                    verified</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-lg" id="btnCancelQueueModal">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <span data-i18n="btn_cancel_text">Cancel</span>
+          </button>
+          <button type="submit" class="btn btn-accent btn-lg" id="btnSubmitQueue">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            <span id="btnSubmitQueueText" data-i18n="btn_confirm_queue">Add to Queue List</span>
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -930,8 +940,8 @@
             </svg>
           </div>
           <div>
-            <h3>Complete Surgical Case</h3>
-            <p>Finalize procedure notes and discharge from active queue</p>
+            <h3 data-i18n="modal_complete_title">Complete Surgical Case</h3>
+            <p data-i18n="modal_complete_sub">Finalize procedure notes and discharge from active queue</p>
           </div>
         </div>
         <button class="modal-close" id="btnCloseCompleteModal">&times;</button>
@@ -946,7 +956,7 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="completeSutureType">Closure / Suturing Method</label>
+            <label for="completeSutureType" data-i18n="label_closure_type">Closure / Suturing Method</label>
             <select id="completeSutureType">
               <option value="3-0 Ethilon (Non-absorbable)">3-0 Ethilon (Non-absorbable)</option>
               <option value="4-0 Prolene (Non-absorbable)">4-0 Prolene (Non-absorbable)</option>
@@ -958,7 +968,7 @@
           </div>
 
           <div class="form-group">
-            <label for="completeSpecimen">Specimen Sent for Pathology?</label>
+            <label for="completeSpecimen" data-i18n="label_specimen">Specimen Sent for Pathology?</label>
             <select id="completeSpecimen">
               <option value="No Specimen (Drainage/Wound)">No Specimen (Drainage/Wound)</option>
               <option value="Yes - Histopathology Routine">Yes - Histopathology Routine</option>
@@ -968,19 +978,19 @@
           </div>
 
           <div class="form-group full-width">
-            <label for="completePostOpNotes">Post-Op Outcome & Discharge Instructions</label>
+            <label for="completePostOpNotes" data-i18n="label_postop_notes">Post-Op Outcome & Discharge Instructions</label>
             <textarea id="completePostOpNotes" rows="3"
-              placeholder="Procedure completed without complication. Good hemostasis achieved. Suture removal advised in 7-10 days."></textarea>
+              placeholder="Procedure completed without complication. Good hemostasis achieved. Suture removal advised in 7-10 days." data-i18n-placeholder="placeholder_postop_notes"></textarea>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" id="btnCancelCompleteModal">Cancel</button>
+          <button type="button" class="btn btn-secondary" id="btnCancelCompleteModal" data-i18n="btn_cancel_text">Cancel</button>
           <button type="submit" class="btn btn-success" id="btnSubmitComplete">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="20 6 9 17 4 12" />
             </svg>
-            Complete Case & Discharge
+            <span data-i18n="btn_confirm_complete">Complete Case & Discharge</span>
           </button>
         </div>
       </form>
@@ -1000,7 +1010,7 @@
             </svg>
           </div>
           <div>
-            <h3 id="detailsModalTitle">Surgical Case Details</h3>
+            <h3 id="detailsModalTitle" data-i18n="details_title">Surgical Case Details</h3>
             <p id="detailsModalSubtitle">Complete case records and surgical timeline</p>
           </div>
         </div>
@@ -1012,14 +1022,14 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="btnCloseDetailsBtn">Close</button>
+        <button type="button" class="btn btn-secondary" id="btnCloseDetailsBtn" data-i18n="btn_close">Close</button>
         <button type="button" class="btn btn-primary" id="btnPrintDetailsBtn">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="6 9 6 2 18 2 18 9" />
             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
             <rect x="6" y="14" width="12" height="8" />
           </svg>
-          Print Case Summary
+          <span data-i18n="btn_print">Print Case Summary</span>
         </button>
       </div>
     </div>
@@ -1029,6 +1039,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Scripts -->
+  <script src="js/i18n.js"></script>
   <script src="js/sampleData.js"></script>
   <script src="js/app.js"></script>
 </body>
