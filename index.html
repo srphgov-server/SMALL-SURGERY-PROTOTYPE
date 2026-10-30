@@ -555,85 +555,44 @@
           </div>
           <div>
             <h3 data-i18n="modal_queue_title">Queue Patient for Minor Surgery</h3>
-            <p data-i18n="modal_queue_sub">Search a patient from Patient List and add to queue with 1 click</p>
+            <p data-i18n="modal_queue_sub">Search patient from list, enter diagnosis, indication, and priority</p>
           </div>
         </div>
         <button class="modal-close" id="btnCloseQueueModal">&times;</button>
       </div>
 
       <form id="formQueueSurgery">
-        <!-- Section 1: Patient Selection / Walk-in Intake -->
-        <div class="form-section-divider full-width">
-          <div class="form-section-title">
-            <span class="step-badge">1</span>
-            <span data-i18n="label_search_patient">Search Patient from Patient List</span>
-          </div>
-        </div>
-
-        <!-- Patient Mode Switcher: Search Existing vs Walk-in New Patient -->
-        <div class="patient-mode-toggle full-width">
-          <button type="button" class="mode-toggle-btn active" id="btnModeExisting" data-mode="existing">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <span data-i18n="mode_search_existing">Search Existing Patient</span>
-          </button>
-          <button type="button" class="mode-toggle-btn" id="btnModeWalkin" data-mode="walkin">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <line x1="19" y1="8" x2="19" y2="14" />
-              <line x1="22" y1="11" x2="16" y2="11" />
-            </svg>
-            <span data-i18n="mode_walkin">+ New Walk-in Patient (All-in-One)</span>
-          </button>
-        </div>
-
         <div class="form-grid">
-          <!-- MODE 1: Patient Search from Patient List -->
+          <!-- 1. Search Patient from Patient List -->
           <div class="form-group full-width patient-picker-group" id="patientSearchSection">
-            <div class="patient-search-header-row">
-              <label for="queuePatientSearchInput" class="search-label-highlight">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                <span data-i18n="label_search_patient">Search Patient from Patient List *</span>
-                <span class="search-sub-hint" data-i18n="search_sub_hint">(Select below or type to filter)</span>
-              </label>
-              <button type="button" class="btn-link-action" id="btnSwitchToWalkinFromSearch">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <line x1="19" y1="8" x2="19" y2="14" />
-                  <line x1="22" y1="11" x2="16" y2="11" />
-                </svg>
-                <span data-i18n="btn_walkin_link">Walk-in Patient? Enter Details Directly</span>
-              </button>
-            </div>
+            <label for="queuePatientSearchInput" class="search-label-highlight">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <span data-i18n="label_search_patient">Search Patient from Patient List *</span>
+              <span class="search-sub-hint" data-i18n="search_sub_hint">(Select below or type to filter)</span>
+            </label>
 
             <div class="patient-search-container" id="patientSearchContainer">
               <div class="patient-search-input-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                  class="search-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
                 <input type="text" id="queuePatientSearchInput"
                   placeholder="Type patient name, MRN, or phone number to search list..." data-i18n-placeholder="placeholder_queue_search" autocomplete="off">
-                <button type="button" class="btn-clear-search hidden" id="btnClearPatientSearch"
-                  title="Clear search">&times;</button>
+                <button type="button" class="btn-clear-search hidden" id="btnClearPatientSearch" title="Clear search">&times;</button>
               </div>
 
               <!-- Live matching dropdown list -->
               <div class="patient-search-dropdown" id="patientSearchResults">
-                <!-- Dynamically rendered list items with + Add to Queue button -->
+                <!-- Dynamically rendered list items -->
               </div>
             </div>
 
             <!-- Hidden input to store chosen patient ID -->
-            <input type="hidden" id="queueSelectedPatientId">
+            <input type="hidden" id="queueSelectedPatientId" required>
 
             <!-- Selected Patient Card (Visible when a patient is selected) -->
             <div class="selected-patient-card hidden" id="selectedPatientCard">
@@ -672,241 +631,49 @@
                   <span id="selectedPatientNotes" class="text-muted">None</span>
                 </div>
               </div>
-
-              <!-- Dedicated Highlighted Action to Add Selected Patient to Queue List -->
-              <div class="selected-patient-queue-action">
-                <div class="quick-queue-header">
-                  <span class="quick-queue-badge">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                      stroke-width="2.5">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    <span data-i18n="ready_badge">Ready for Surgery Queue</span>
-                  </span>
-                  <span class="text-xs text-muted" data-i18n="ready_sub">Confirm surgical procedure & click button below to add to Queue
-                    list</span>
-                </div>
-
-                <div class="quick-queue-controls">
-                  <div class="quick-control-field">
-                    <label for="queueQuickProcedure" data-i18n="label_procedure">Surgical Procedure *</label>
-                    <select id="queueQuickProcedure" class="input-select">
-                      <option value="Abscess Incision & Drainage">Abscess Incision & Drainage</option>
-                      <option value="Lipoma Excision (Subcutaneous)">Lipoma Excision (Subcutaneous)</option>
-                      <option value="Sebaceous Cyst Removal">Sebaceous Cyst Removal</option>
-                      <option value="Wound Debridement & Suturing">Complex Wound Debridement & Primary Suturing
-                      </option>
-                      <option value="Punch / Shave Skin Biopsy">Punch / Shave Skin Biopsy</option>
-                      <option value="Ingrown Toenail Wedge Resection">Ingrown Toenail Partial Matrixectomy</option>
-                      <option value="Foreign Body Removal (Soft Tissue)">Foreign Body Removal (Soft Tissue)</option>
-                      <option value="Scar Revision / Minor Excision">Scar Revision / Minor Excision</option>
-                      <option value="Other Minor Surgical Procedure">Other Minor Surgical Procedure...</option>
-                    </select>
-                  </div>
-
-                  <div class="quick-control-field">
-                    <label for="queueQuickPriority" data-i18n="label_priority">Case Priority *</label>
-                    <select id="queueQuickPriority" class="input-select">
-                      <option value="Standard">Standard (Routine minor case)</option>
-                      <option value="High">High (Infection, significant pain)</option>
-                      <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
-                      <option value="Elective">Elective (Cosmetic/elective)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="quick-queue-action-buttons">
-                  <button type="button" class="btn btn-accent btn-lg btn-add-selected-now"
-                    id="btnQuickAddSelectedToQueue">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                      stroke-width="2.2">
-                      <path d="M12 5v14M5 12h14" />
-                    </svg>
-                    <span data-i18n="btn_add_selected_to_queue">Add Selected Patient to Queue List</span>
-                  </button>
-                  <button type="button" class="btn-toggle-options" id="btnToggleOptions">
-                    <span id="toggleOptionsText">⚙️ Show OR Suite & Anesthesia Details</span>
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
             </div>
-            <div class="field-error-hint hidden" id="patientSelectError">Please search and select a patient from the
-              patient list before submitting.</div>
+
+            <div class="field-error-hint hidden" id="patientSelectError">Please search and select a patient from the patient list before submitting.</div>
           </div>
 
-          <!-- MODE 2: Direct Walk-in Patient Creation (All-in-One) -->
-          <div class="walkin-form-container full-width hidden" id="walkinPatientSection">
-            <div class="walkin-badge-banner">
-              <div class="walkin-banner-icon">⚡</div>
-              <div class="walkin-banner-text">
-                <div class="walkin-banner-title" data-i18n="walkin_banner_title">Walk-in Patient Instant Intake</div>
-                <div class="text-xs text-muted" data-i18n="walkin_banner_sub">This patient will be registered into the Patient List and placed in
-                  the Surgery Queue simultaneously.</div>
-              </div>
-              <div class="auto-mrn-pill font-mono" id="walkinMrnPreview">MRN-NEW</div>
-            </div>
-
-            <div class="form-grid walkin-grid">
-              <div class="form-group full-width">
-                <label for="walkinFullName" data-i18n="label_full_name">Patient Full Name *</label>
-                <input type="text" id="walkinFullName" placeholder="e.g. Samuel Green" data-i18n-placeholder="placeholder_name">
-              </div>
-
-              <div class="form-group">
-                <label for="walkinAge" data-i18n="label_age">Age *</label>
-                <input type="number" id="walkinAge" min="1" max="120" placeholder="e.g. 42">
-              </div>
-
-              <div class="form-group">
-                <label for="walkinGender" data-i18n="label_gender">Gender *</label>
-                <select id="walkinGender">
-                  <option value="" data-i18n="select_gender">Select Gender</option>
-                  <option value="Female" data-i18n="opt_female">Female</option>
-                  <option value="Male" data-i18n="opt_male">Male</option>
-                  <option value="Other" data-i18n="opt_other">Other</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="walkinPhone" data-i18n="label_phone">Contact Phone *</label>
-                <input type="tel" id="walkinPhone" placeholder="e.g. +1 (555) 304-9821">
-              </div>
-
-              <div class="form-group">
-                <label for="walkinBloodType" data-i18n="label_blood_type">Blood Type</label>
-                <select id="walkinBloodType">
-                  <option value="Unknown">Unknown</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-              </div>
-
-              <div class="form-group full-width">
-                <label for="walkinAllergies" data-i18n="label_allergies">Known Allergies / Medical Alerts</label>
-                <input type="text" id="walkinAllergies" placeholder="e.g. Penicillin, Latex (or type 'NKDA')" data-i18n-placeholder="placeholder_allergies">
-              </div>
-
-              <div class="form-group full-width">
-                <label for="walkinNotes" data-i18n="label_preop_notes">Pre-Op Assessment / Medical History</label>
-                <textarea id="walkinNotes" rows="2"
-                  placeholder="Brief history, vital signs, fasting status..." data-i18n-placeholder="placeholder_preop_notes"></textarea>
-              </div>
-            </div>
-            <div class="field-error-hint hidden" id="walkinFieldError">Please fill in required patient fields (Name,
-              Age, Gender, Phone).</div>
+          <!-- 2. Diagnostic Input Box -->
+          <div class="form-group full-width">
+            <label for="queueDiagnosis">
+              <span data-i18n="label_diagnostic">Diagnostic / Diagnosis *</span>
+            </label>
+            <input type="text" id="queueDiagnosis" list="diagnosticSuggestions" required
+              placeholder="e.g. Abscess, Sebaceous Cyst, Wound Laceration, Lipoma..." data-i18n-placeholder="placeholder_diagnostic" autocomplete="off">
+            <datalist id="diagnosticSuggestions">
+              <option value="Abscess (Incision & Drainage)">
+              <option value="Sebaceous Cyst Removal">
+              <option value="Lipoma Excision (Subcutaneous)">
+              <option value="Complex Wound Debridement & Primary Suturing">
+              <option value="Punch / Shave Skin Biopsy">
+              <option value="Ingrown Toenail Partial Matrixectomy">
+              <option value="Foreign Body Removal (Soft Tissue)">
+              <option value="Scar Revision / Minor Excision">
+              <option value="Skin Lesion Excision">
+            </datalist>
           </div>
 
-          <!-- Advanced Settings Wrapper (Collapsible for quick search flow, always visible in Walk-in) -->
-          <div class="advanced-queue-settings" id="advancedQueueSettings">
-            <!-- Section 2: Surgical Procedure & Suite Assignment -->
-            <div class="form-section-divider full-width">
-              <div class="form-section-title">
-                <span class="step-badge">2</span>
-                <span data-i18n="step2_title">Surgical Procedure & Suite Assignment</span>
-              </div>
-            </div>
+          <!-- 3. Indication Input Box -->
+          <div class="form-group full-width">
+            <label for="queueIndication">
+              <span data-i18n="label_indication">Indication *</span>
+            </label>
+            <input type="text" id="queueIndication" required
+              placeholder="e.g. Pain & swelling, drainage, secondary infection risk, biopsy, laceration closure..." data-i18n-placeholder="placeholder_indication" autocomplete="off">
+          </div>
 
-            <div class="form-grid">
-              <!-- Surgery Procedure -->
-              <div class="form-group full-width">
-                <label for="queueProcedure" data-i18n="label_procedure">Surgical Procedure *</label>
-                <select id="queueProcedure">
-                  <option value="Abscess Incision & Drainage">Abscess Incision & Drainage</option>
-                  <option value="Lipoma Excision (Subcutaneous)">Lipoma Excision (Subcutaneous)</option>
-                  <option value="Sebaceous Cyst Removal">Sebaceous Cyst Removal</option>
-                  <option value="Wound Debridement & Suturing">Complex Wound Debridement & Primary Suturing</option>
-                  <option value="Punch / Shave Skin Biopsy">Punch / Shave Skin Biopsy</option>
-                  <option value="Ingrown Toenail Wedge Resection">Ingrown Toenail Partial Matrixectomy</option>
-                  <option value="Foreign Body Removal (Soft Tissue)">Foreign Body Removal (Soft Tissue)</option>
-                  <option value="Scar Revision / Minor Excision">Scar Revision / Minor Excision</option>
-                  <option value="Other Minor Surgical Procedure">Other Minor Surgical Procedure...</option>
-                </select>
-              </div>
-
-              <!-- Custom Procedure Specification if needed -->
-              <div class="form-group full-width hidden" id="customProcGroup">
-                <label for="queueCustomProcedure">Custom Procedure Description</label>
-                <input type="text" id="queueCustomProcedure" placeholder="Specify custom procedure name...">
-              </div>
-
-              <!-- Assigned Surgeon -->
-              <div class="form-group">
-                <label for="queueSurgeon" data-i18n="label_surgeon">Lead Surgeon / Practitioner *</label>
-                <select id="queueSurgeon">
-                  <!-- Filled dynamically -->
-                </select>
-              </div>
-
-              <!-- Minor OR Suite -->
-              <div class="form-group">
-                <label for="queueRoom" data-i18n="label_room">Minor OR / Treatment Suite *</label>
-                <select id="queueRoom">
-                  <!-- Filled dynamically -->
-                </select>
-              </div>
-            </div>
-
-            <!-- Section 3: Clinical Priority & Pre-Op Safety -->
-            <div class="form-section-divider full-width">
-              <div class="form-section-title">
-                <span class="step-badge">3</span>
-                <span data-i18n="step3_title">Clinical Priority & Pre-Op Safety</span>
-              </div>
-            </div>
-
-            <div class="form-grid">
-              <!-- Priority -->
-              <div class="form-group">
-                <label for="queuePriority" data-i18n="label_priority">Case Priority *</label>
-                <select id="queuePriority">
-                  <option value="Standard">Standard (Routine minor case)</option>
-                  <option value="High">High (Infection, significant pain)</option>
-                  <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
-                  <option value="Elective">Elective (Cosmetic/elective)</option>
-                </select>
-              </div>
-
-              <!-- Anesthesia Type -->
-              <div class="form-group">
-                <label for="queueAnesthesia" data-i18n="label_anesthesia">Anesthesia Type *</label>
-                <select id="queueAnesthesia">
-                  <option value="Local Infiltration (1% Lidocaine w/ Epi)">Local Infiltration (1% Lidocaine w/
-                    Epi)</option>
-                  <option value="Local Infiltration (Plain Lidocaine)">Local Infiltration (Plain Lidocaine)
-                  </option>
-                  <option value="Digital / Peripheral Nerve Block">Digital / Peripheral Nerve Block</option>
-                  <option value="Topical Anesthesia (EMLA Cream)">Topical Anesthesia (EMLA Cream)</option>
-                  <option value="Field Block Anesthesia">Field Block Anesthesia</option>
-                  <option value="None / Ice & Pressure">None / Cryoanalgesia</option>
-                </select>
-              </div>
-
-              <!-- Clinical Indications / Notes -->
-              <div class="form-group full-width">
-                <label for="queueNotes" data-i18n="label_notes">Surgical Site & Pre-Op Instructions</label>
-                <textarea id="queueNotes" rows="2"
-                  placeholder="e.g. Left forearm 3cm lesion; marked with surgical pen; sterile draping ready..." data-i18n-placeholder="placeholder_notes"></textarea>
-              </div>
-
-              <!-- Safety Checklist Acknowledgment -->
-              <div class="form-group full-width checkbox-row">
-                <label class="custom-checkbox">
-                  <input type="checkbox" id="queueChecklistConfirm" checked>
-                  <span class="checkmark"></span>
-                  <span class="checkbox-text" data-i18n="label_consent_confirm">Informed consent confirmed & WHO Surgical Safety Site Marking
-                    verified</span>
-                </label>
-              </div>
-            </div>
+          <!-- 4. Case Priority -->
+          <div class="form-group full-width">
+            <label for="queuePriority" data-i18n="label_priority">Case Priority *</label>
+            <select id="queuePriority" required>
+              <option value="Standard">Standard (Routine minor case)</option>
+              <option value="High">High (Infection, significant pain)</option>
+              <option value="Urgent">Urgent / STAT (Active bleeding, acute abscess)</option>
+              <option value="Elective">Elective (Cosmetic/elective)</option>
+            </select>
           </div>
         </div>
 

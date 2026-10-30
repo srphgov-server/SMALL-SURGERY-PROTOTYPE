@@ -96,31 +96,18 @@ const I18N = {
 
     // Modal: Queue Patient for Minor Surgery
     modal_queue_title: "Queue Patient for Minor Surgery",
-    modal_queue_sub: "Search a patient from Patient List and add to queue with 1 click",
-    mode_search_existing: "Search Existing Patient",
-    mode_walkin: "+ New Walk-in Patient (All-in-One)",
+    modal_queue_sub: "Search patient from list, enter diagnosis, indication, and priority",
     label_search_patient: "Search Patient from Patient List *",
     search_sub_hint: "(Select below or type to filter)",
-    btn_walkin_link: "Walk-in Patient? Enter Details Directly",
     placeholder_queue_search: "Type patient name, MRN, or phone number to search list...",
     btn_change_patient: "Change Patient",
     allergies_label: "Allergies:",
     preop_history_label: "Pre-Op History:",
-    ready_badge: "Ready for Surgery Queue",
-    ready_sub: "Confirm surgical procedure & click button below to add to Queue list",
-    label_procedure: "Surgical Procedure *",
+    label_diagnostic: "Diagnostic / Diagnosis *",
+    placeholder_diagnostic: "e.g. Abscess, Sebaceous Cyst, Wound Laceration, Lipoma...",
+    label_indication: "Indication *",
+    placeholder_indication: "e.g. Pain & swelling, drainage, secondary infection risk, biopsy...",
     label_priority: "Case Priority *",
-    btn_add_selected_to_queue: "Add Selected Patient to Queue List",
-    btn_show_options: "⚙️ Show OR Suite & Anesthesia Details ▼",
-    btn_hide_options: "⚙️ Hide OR Suite & Anesthesia Options ▲",
-    step2_title: "Surgical Procedure & Suite Assignment",
-    label_surgeon: "Lead Surgeon / Practitioner *",
-    label_room: "Minor OR / Treatment Suite *",
-    step3_title: "Clinical Priority & Pre-Op Safety",
-    label_anesthesia: "Anesthesia Type *",
-    label_notes: "Surgical Site & Pre-Op Instructions",
-    placeholder_notes: "e.g. Left forearm 3cm lesion; marked with surgical pen; sterile draping ready...",
-    label_consent_confirm: "Informed consent confirmed & WHO Surgical Safety Site Marking verified",
     btn_confirm_queue: "Add to Queue List",
 
     // Walk-in Section
@@ -277,31 +264,18 @@ const I18N = {
 
     // Modal: Queue Patient for Minor Surgery
     modal_queue_title: "ដាក់អ្នកជំងឺចូលជួរវះកាត់តូច",
-    modal_queue_sub: "ស្វែងរកអ្នកជំងឺពីបញ្ជី និងបន្ថែមចូលជួរដោយចុចតែម្តង",
-    mode_search_existing: "ស្វែងរកអ្នកជំងឺដែលមានស្រាប់",
-    mode_walkin: "+ អ្នកជំងឺមកផ្ទាល់ថ្មី (ចុះឈ្មោះភ្លាមៗ)",
+    modal_queue_sub: "ស្វែងរកអ្នកជំងឺពីបញ្ជី បញ្ចូលរោគវិនិច្ឆ័យ សូចនាករ និងកម្រិតអាទិភាព",
     label_search_patient: "ស្វែងរកអ្នកជំងឺពីបញ្ជីអ្នកជំងឺ *",
     search_sub_hint: "(ជ្រើសរើសខាងក្រោម ឬវាយដើម្បីស្វែងរក)",
-    btn_walkin_link: "អ្នកជំងឺមកផ្ទាល់? បញ្ចូលព័ត៌មានដោយផ្ទាល់",
     placeholder_queue_search: "វាយឈ្មោះអ្នកជំងឺ, លេខកូដ MRN, ឬលេខទូរស័ព្ទដើម្បីស្វែងរក...",
     btn_change_patient: "ប្តូរអ្នកជំងឺ",
     allergies_label: "ប្រតិកម្មថ្នាំ:",
     preop_history_label: "ប្រវត្តិមុនវះកាត់:",
-    ready_badge: "រួចរាល់សម្រាប់ដាក់ចូលជួរវះកាត់",
-    ready_sub: "បញ្ជាក់ប្រភេទការវះកាត់ និងចុចប៊ូតុងខាងក្រោមដើម្បីបន្ថែមចូលជួរ",
-    label_procedure: "ប្រភេទការវះកាត់ *",
+    label_diagnostic: "រោគវិនិច្ឆ័យ (Diagnostic) *",
+    placeholder_diagnostic: "ឧ. បូស, គីសស្បែក, របួសរហែក, ដុំខ្លាញ់...",
+    label_indication: "សូចនាករគ្លីនិក (Indication) *",
+    placeholder_indication: "ឧ. ឈឺចាប់ & ហើម, ហូរខ្ទុះ, ប្រឈមការឆ្លងរោគ, ច្រឹបសាច់...",
     label_priority: "កម្រិតអាទិភាព *",
-    btn_add_selected_to_queue: "បន្ថែមអ្នកជំងឺដែលបានជ្រើសរើសចូលជួរវះកាត់",
-    btn_show_options: "⚙️ បង្ហាញបន្ទប់វះកាត់ & ជម្រើសថ្នាំស្ពឹក ▼",
-    btn_hide_options: "⚙️ លាក់ជម្រើសបន្ទប់វះកាត់ & ថ្នាំស្ពឹក ▲",
-    step2_title: "ការចាត់ចែងការវះកាត់ និងបន្ទប់",
-    label_surgeon: "គ្រូពេទ្យវះកាត់ទទួលបន្ទុក *",
-    label_room: "បន្ទប់វះកាត់តូច *",
-    step3_title: "អាទិភាពគ្លីនិក & សុវត្ថិភាពមុនវះកាត់",
-    label_anesthesia: "ប្រភេទថ្នាំស្ពឹក *",
-    label_notes: "ទីតាំងវះកាត់ & ការណែនាំមុនវះកាត់",
-    placeholder_notes: "ឧ. ដំបៅកំភួនដៃឆ្វេងទំហំ 3cm; បានគូសសម្គាល់ទីតាំងវះកាត់រួចរាល់...",
-    label_consent_confirm: "បានបញ្ជាក់ការយល់ព្រមពីអ្នកជំងឺ & បានផ្ទៀងផ្ទាត់ការសម្គាល់ទីតាំងតាមស្តង់ដារ WHO",
     btn_confirm_queue: "បន្ថែមចូលជួរវះកាត់",
 
     // Walk-in Section
@@ -517,14 +491,6 @@ function setLanguage(lang) {
     themeText.textContent = isDark ? t('theme_dark') : t('theme_light');
   }
 
-  // Update toggle options button text in queue modal
-  const toggleOptionsText = document.getElementById('toggleOptionsText');
-  const advancedSettings = document.getElementById('advancedQueueSettings');
-  if (toggleOptionsText && advancedSettings) {
-    const isOpen = advancedSettings.classList.contains('open');
-    toggleOptionsText.textContent = isOpen ? t('btn_hide_options') : t('btn_show_options');
-  }
-
   // Re-populate dropdowns with localized text
   if (typeof populateDropdowns === 'function') {
     populateDropdowns();
@@ -577,3 +543,4 @@ window.setLanguage = setLanguage;
 window.localizeProcedure = localizeProcedure;
 window.localizePriority = localizePriority;
 window.initLanguageSwitcher = initLanguageSwitcher;
+

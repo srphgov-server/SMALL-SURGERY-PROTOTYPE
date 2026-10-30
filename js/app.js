@@ -891,108 +891,18 @@ function initModals() {
     });
   });
 
-  // Custom procedure select dropdown toggle
-  const procSelect = document.getElementById('queueProcedure');
-  const customProcGroup = document.getElementById('customProcGroup');
-  if (procSelect && customProcGroup) {
-    procSelect.addEventListener('change', () => {
-      if (procSelect.value === 'Other Minor Surgical Procedure') {
-        customProcGroup.classList.remove('hidden');
-        document.getElementById('queueCustomProcedure').setAttribute('required', 'true');
-      } else {
-        customProcGroup.classList.add('hidden');
-        document.getElementById('queueCustomProcedure').removeAttribute('required');
-      }
-    });
-  }
-
   // Initialize interactive patient search from patient list
   initPatientSearchInModal();
 }
 
 /**
- * Interactive Patient Search & Walk-in Mode inside Queue Popup
+ * Interactive Patient Search inside Queue Popup
  */
 function initPatientSearchInModal() {
   const searchInput = document.getElementById('queuePatientSearchInput');
   const resultsContainer = document.getElementById('patientSearchResults');
   const btnClear = document.getElementById('btnClearPatientSearch');
   const btnChange = document.getElementById('btnChangeSelectedPatient');
-  const btnSwitchWalkin = document.getElementById('btnSwitchToWalkinFromSearch');
-  const btnModeExisting = document.getElementById('btnModeExisting');
-  const btnModeWalkin = document.getElementById('btnModeWalkin');
-
-  // Mode Switchers
-  if (btnModeExisting) {
-    btnModeExisting.addEventListener('click', () => setQueueModalMode('existing'));
-  }
-  if (btnModeWalkin) {
-    btnModeWalkin.addEventListener('click', () => setQueueModalMode('walkin'));
-  }
-  if (btnSwitchWalkin) {
-    btnSwitchWalkin.addEventListener('click', () => {
-      const typedQuery = searchInput ? searchInput.value.trim() : '';
-      setQueueModalMode('walkin');
-      const walkinName = document.getElementById('walkinFullName');
-      if (walkinName && typedQuery) {
-        walkinName.value = typedQuery;
-      }
-    });
-  }
-
-  // Direct Button on Selected Patient Card to Add to Queue List
-  const btnQuickAddSelected = document.getElementById('btnQuickAddSelectedToQueue');
-  if (btnQuickAddSelected) {
-    btnQuickAddSelected.addEventListener('click', () => {
-      executeAddSelectedPatientToQueue();
-    });
-  }
-
-  // Toggle Advanced Settings (OR Suite, Surgeon, Anesthesia)
-  const btnToggleOptions = document.getElementById('btnToggleOptions');
-  const advancedSettings = document.getElementById('advancedQueueSettings');
-  const toggleOptionsText = document.getElementById('toggleOptionsText');
-  if (btnToggleOptions && advancedSettings) {
-    btnToggleOptions.addEventListener('click', () => {
-      const isOpen = advancedSettings.classList.toggle('open');
-      if (toggleOptionsText) {
-        toggleOptionsText.textContent = isOpen
-          ? '⚙️ Hide OR Suite & Anesthesia Options ▲'
-          : '⚙️ Show OR Suite & Anesthesia Details ▼';
-      }
-    });
-  }
-
-  // Two-way synchronization between quick selects and advanced form selects
-  const quickProc = document.getElementById('queueQuickProcedure');
-  const mainProc = document.getElementById('queueProcedure');
-  if (quickProc && mainProc) {
-    quickProc.addEventListener('change', () => {
-      mainProc.value = quickProc.value;
-      const customGroup = document.getElementById('customProcGroup');
-      if (customGroup) {
-        if (quickProc.value === 'Other Minor Surgical Procedure') {
-          customGroup.classList.remove('hidden');
-        } else {
-          customGroup.classList.add('hidden');
-        }
-      }
-    });
-    mainProc.addEventListener('change', () => {
-      quickProc.value = mainProc.value;
-    });
-  }
-
-  const quickPriority = document.getElementById('queueQuickPriority');
-  const mainPriority = document.getElementById('queuePriority');
-  if (quickPriority && mainPriority) {
-    quickPriority.addEventListener('change', () => {
-      mainPriority.value = quickPriority.value;
-    });
-    mainPriority.addEventListener('change', () => {
-      quickPriority.value = mainPriority.value;
-    });
-  }
 
   if (!searchInput || !resultsContainer) return;
 
@@ -1040,48 +950,6 @@ function initPatientSearchInModal() {
 }
 
 /**
- * Switch Queue Popup between 'existing' and 'walkin' mode
- */
-function setQueueModalMode(mode) {
-  state.queueMode = mode;
-  const btnModeExisting = document.getElementById('btnModeExisting');
-  const btnModeWalkin = document.getElementById('btnModeWalkin');
-  const searchSection = document.getElementById('patientSearchSection');
-  const walkinSection = document.getElementById('walkinPatientSection');
-  const advancedSettings = document.getElementById('advancedQueueSettings');
-  const btnSubmitText = document.getElementById('btnSubmitQueueText');
-  const walkinMrnPreview = document.getElementById('walkinMrnPreview');
-  const walkinError = document.getElementById('walkinFieldError');
-  const patientSelectError = document.getElementById('patientSelectError');
-  const toggleOptionsText = document.getElementById('toggleOptionsText');
-
-  if (walkinError) walkinError.classList.add('hidden');
-  if (patientSelectError) patientSelectError.classList.add('hidden');
-
-  if (mode === 'walkin') {
-    if (btnModeWalkin) btnModeWalkin.classList.add('active');
-    if (btnModeExisting) btnModeExisting.classList.remove('active');
-    if (searchSection) searchSection.classList.add('hidden');
-    if (walkinSection) walkinSection.classList.remove('hidden');
-    if (advancedSettings) advancedSettings.classList.add('open');
-    if (btnSubmitText) btnSubmitText.textContent = (typeof currentLang !== 'undefined' && currentLang === 'km') ? 'ចុះឈ្មោះអ្នកជំងឺ & ដាក់ចូលជួរវះកាត់' : 'Register Patient & Add to Queue';
-    if (walkinMrnPreview) walkinMrnPreview.textContent = `MRN-${Math.floor(1000 + Math.random() * 9000)}`;
-    const walkinName = document.getElementById('walkinFullName');
-    if (walkinName) walkinName.focus();
-  } else {
-    if (btnModeExisting) btnModeExisting.classList.add('active');
-    if (btnModeWalkin) btnModeWalkin.classList.remove('active');
-    if (searchSection) searchSection.classList.remove('hidden');
-    if (walkinSection) walkinSection.classList.add('hidden');
-    if (advancedSettings) advancedSettings.classList.remove('open');
-    if (toggleOptionsText) toggleOptionsText.textContent = (typeof t === 'function') ? t('btn_show_options', '⚙️ Show OR Suite & Anesthesia Details ▼') : '⚙️ Show OR Suite & Anesthesia Details ▼';
-    if (btnSubmitText) btnSubmitText.textContent = (typeof t === 'function') ? t('btn_confirm_queue', 'Add to Queue List') : 'Add to Queue List';
-    const searchInput = document.getElementById('queuePatientSearchInput');
-    if (searchInput) searchInput.focus();
-  }
-}
-
-/**
  * Render matching patients in Queue popup dropdown
  */
 function renderPatientSearchResults(query = '') {
@@ -1117,8 +985,8 @@ function renderPatientSearchResults(query = '') {
   const ageSuffix = (typeof currentLang !== 'undefined' && currentLang === 'km') ? 'ឆ្នាំ' : 'y';
   const bloodLabel = (typeof t === 'function') ? t('blood', 'Blood:') : 'Blood:';
   const allergiesLabel = (typeof t === 'function') ? t('allergies_label', 'Allergies:') : 'Allergies:';
-  const addQueueText = (typeof t === 'function') ? t('add_queue_direct', '+ Add to Queue') : '+ Add to Queue';
   const queuedLabel = (typeof t === 'function') ? t('status_queued', 'Queued') : 'Queued';
+  const selectLabel = (typeof currentLang !== 'undefined' && currentLang === 'km') ? 'ជ្រើសរើស' : 'Select';
 
   container.innerHTML = matches.map(p => {
     const isQueued = state.queue.find(item => item.patientId === p.id);
@@ -1144,10 +1012,9 @@ function renderPatientSearchResults(query = '') {
           ${isQueued ? `
             <span class="status-badge waiting">${queuedLabel} (${isQueued.queueNumber})</span>
           ` : `
-            <button type="button" class="btn btn-accent btn-sm btn-item-quick-add" onclick="event.stopPropagation(); quickAddPatientDirectly('${p.id}')" title="Directly add this patient to surgery queue">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
-              <span>${addQueueText}</span>
-            </button>
+            <span class="btn btn-secondary btn-sm" style="pointer-events:none;">
+              <span>${selectLabel}</span>
+            </span>
           `}
         </div>
       </div>
@@ -1157,160 +1024,12 @@ function renderPatientSearchResults(query = '') {
   container.classList.remove('hidden');
 }
 
-/**
- * Instant direct add from search dropdown row
- */
-window.quickAddPatientDirectly = function (patientId) {
-  const patient = state.patients.find(p => p.id === patientId);
-  if (!patient) return;
-
-  const isQueued = state.queue.find(item => item.patientId === patientId);
-  if (isQueued) {
-    showToast(`This patient is already queued under case ${isQueued.queueNumber}`, 'error');
-    return;
-  }
-
-  // Procedure
-  const quickProc = document.getElementById('queueQuickProcedure');
-  const mainProc = document.getElementById('queueProcedure');
-  let procedure = (quickProc && quickProc.value) ? quickProc.value : (mainProc && mainProc.value ? mainProc.value : 'Abscess Incision & Drainage');
-  if (!procedure || procedure === 'Other Minor Surgical Procedure') {
-    procedure = 'Abscess Incision & Drainage';
-  }
-
-  // Priority
-  const quickPriority = document.getElementById('queueQuickPriority');
-  const mainPriority = document.getElementById('queuePriority');
-  const priority = (quickPriority && quickPriority.value) ? quickPriority.value : (mainPriority && mainPriority.value ? mainPriority.value : 'Standard');
-
-  // Surgeon & Room defaults
-  let surgeon = document.getElementById('queueSurgeon') ? document.getElementById('queueSurgeon').value : '';
-  if (!surgeon && state.surgeons.length > 0) surgeon = state.surgeons[0].name;
-
-  let room = document.getElementById('queueRoom') ? document.getElementById('queueRoom').value : '';
-  if (!room && state.rooms.length > 0) room = state.rooms[0].name;
-
-  const anesthesia = document.getElementById('queueAnesthesia') ? document.getElementById('queueAnesthesia').value : 'Local Infiltration (1% Lidocaine w/ Epi)';
-  const notes = patient.notes || '';
-
-  const queueNumber = `Q - ${100 + state.queue.length + state.completed.length + 1}`;
-
-  const queueItem = {
-    id: 'queue-' + Date.now(),
-    queueNumber,
-    patientId: patient.id,
-    patientName: patient.fullName,
-    mrn: patient.mrn,
-    age: patient.age,
-    gender: patient.gender,
-    allergies: patient.allergies,
-    procedure,
-    surgeon,
-    room,
-    priority,
-    anesthesia,
-    notes,
-    status: 'waiting',
-    queuedAt: new Date().toISOString(),
-    startedAt: null,
-    completedAt: null
-  };
-
-  state.queue.push(queueItem);
-  saveState();
-  renderAll();
-
-  resetPatientSelection();
-  closeModal(document.getElementById('modalQueue'));
-  document.getElementById('navQueueTab').click();
-
-  showToast(`Added ${patient.fullName}(${patient.mrn}) to Surgery Queue as ${queueNumber}!`, 'success');
-};
-
-/**
- * Execute Add Selected Patient to Queue (from Selected Card Action button or Submit button)
- */
-function executeAddSelectedPatientToQueue() {
-  const patientId = document.getElementById('queueSelectedPatientId').value;
-  const patient = state.patients.find(p => p.id === patientId);
-  const errorHint = document.getElementById('patientSelectError');
-
-  if (!patientId || !patient) {
-    if (errorHint) errorHint.classList.remove('hidden');
-    showToast('Please search and select a patient from the patient list', 'error');
-    return false;
-  }
-  if (errorHint) errorHint.classList.add('hidden');
-
-  const existing = state.queue.find(q => q.patientId === patientId);
-  if (existing) {
-    showToast(`Patient is already queued under case ${existing.queueNumber}`, 'error');
-    return false;
-  }
-
-  // Procedure
-  const quickProc = document.getElementById('queueQuickProcedure');
-  const mainProc = document.getElementById('queueProcedure');
-  let procedure = (quickProc && quickProc.value) ? quickProc.value : (mainProc && mainProc.value ? mainProc.value : 'Abscess Incision & Drainage');
-  if (procedure === 'Other Minor Surgical Procedure') {
-    const customProc = document.getElementById('queueCustomProcedure');
-    procedure = (customProc && customProc.value.trim()) ? customProc.value.trim() : 'Minor Surgery';
-  }
-
-  // Priority
-  const quickPriority = document.getElementById('queueQuickPriority');
-  const mainPriority = document.getElementById('queuePriority');
-  const priority = (quickPriority && quickPriority.value) ? quickPriority.value : (mainPriority && mainPriority.value ? mainPriority.value : 'Standard');
-
-  // Surgeon & Suite
-  let surgeon = document.getElementById('queueSurgeon') ? document.getElementById('queueSurgeon').value : '';
-  if (!surgeon && state.surgeons.length > 0) surgeon = state.surgeons[0].name;
-
-  let room = document.getElementById('queueRoom') ? document.getElementById('queueRoom').value : '';
-  if (!room && state.rooms.length > 0) room = state.rooms[0].name;
-
-  const anesthesia = document.getElementById('queueAnesthesia') ? document.getElementById('queueAnesthesia').value : 'Local Infiltration (1% Lidocaine w/ Epi)';
-  const notes = document.getElementById('queueNotes') ? document.getElementById('queueNotes').value.trim() : (patient.notes || '');
-
-  const queueNumber = `Q - ${100 + state.queue.length + state.completed.length + 1}`;
-
-  const queueItem = {
-    id: 'queue-' + Date.now(),
-    queueNumber,
-    patientId: patient.id,
-    patientName: patient.fullName,
-    mrn: patient.mrn,
-    age: patient.age,
-    gender: patient.gender,
-    allergies: patient.allergies,
-    procedure,
-    surgeon,
-    room,
-    priority,
-    anesthesia,
-    notes,
-    status: 'waiting',
-    queuedAt: new Date().toISOString(),
-    startedAt: null,
-    completedAt: null
-  };
-
-  state.queue.push(queueItem);
-  saveState();
-  renderAll();
-
-  resetPatientSelection();
-  closeModal(document.getElementById('modalQueue'));
-  document.getElementById('navQueueTab').click();
-
-  showToast(`Added ${patient.fullName}(${patient.mrn}) to Surgery Queue as ${queueNumber}!`, 'success');
-  return true;
-}
-
 window.onSelectPatientResult = function (patientId) {
   const isQueued = state.queue.find(item => item.patientId === patientId);
   if (isQueued) {
-    showToast(`This patient is already queued under case ${isQueued.queueNumber}`, 'error');
+    showToast((typeof currentLang !== 'undefined' && currentLang === 'km') 
+      ? `អ្នកជំងឺនេះមានក្នុងជួរវះកាត់រួចហើយ (ករណី ${isQueued.queueNumber})` 
+      : `This patient is already queued under case ${isQueued.queueNumber}`, 'error');
     return;
   }
   selectPatientForQueue(patientId);
@@ -1361,26 +1080,17 @@ function selectPatientForQueue(patientId) {
   }
   if (notesEl) notesEl.textContent = patient.notes || 'No pre-op assessment notes recorded.';
 
-  // Sync quick controls with main controls
-  const quickProc = document.getElementById('queueQuickProcedure');
-  const mainProc = document.getElementById('queueProcedure');
-  if (quickProc && mainProc) {
-    if (!mainProc.value) mainProc.value = 'Abscess Incision & Drainage';
-    quickProc.value = mainProc.value;
-  }
-
-  const quickPriority = document.getElementById('queueQuickPriority');
-  const mainPriority = document.getElementById('queuePriority');
-  if (quickPriority && mainPriority) {
-    if (!mainPriority.value) mainPriority.value = 'Standard';
-    quickPriority.value = mainPriority.value;
-  }
-
   // Swap views
   if (searchContainer) searchContainer.classList.add('hidden');
   if (resultsContainer) resultsContainer.classList.add('hidden');
   if (selectedCard) selectedCard.classList.remove('hidden');
   if (errorHint) errorHint.classList.add('hidden');
+
+  // Focus on Diagnostic input box immediately after selecting patient
+  setTimeout(() => {
+    const diagInput = document.getElementById('queueDiagnosis');
+    if (diagInput) diagInput.focus();
+  }, 100);
 }
 
 /**
@@ -1420,24 +1130,16 @@ function openQueueModal(preselectedPatientId = null) {
   populateDropdowns();
   const modalQueue = document.getElementById('modalQueue');
 
-  // Reset walk-in fields
-  const walkinName = document.getElementById('walkinFullName');
-  const walkinAge = document.getElementById('walkinAge');
-  const walkinGender = document.getElementById('walkinGender');
-  const walkinPhone = document.getElementById('walkinPhone');
-  const walkinAllergies = document.getElementById('walkinAllergies');
-  const walkinNotes = document.getElementById('walkinNotes');
-  const walkinError = document.getElementById('walkinFieldError');
+  // Reset fields
+  const diagInput = document.getElementById('queueDiagnosis');
+  const indInput = document.getElementById('queueIndication');
+  const prioritySelect = document.getElementById('queuePriority');
+  const errorHint = document.getElementById('patientSelectError');
 
-  if (walkinName) walkinName.value = '';
-  if (walkinAge) walkinAge.value = '';
-  if (walkinGender) walkinGender.value = '';
-  if (walkinPhone) walkinPhone.value = '';
-  if (walkinAllergies) walkinAllergies.value = '';
-  if (walkinNotes) walkinNotes.value = '';
-  if (walkinError) walkinError.classList.add('hidden');
-
-  setQueueModalMode('existing');
+  if (diagInput) diagInput.value = '';
+  if (indInput) indInput.value = '';
+  if (prioritySelect) prioritySelect.value = 'Standard';
+  if (errorHint) errorHint.classList.add('hidden');
 
   if (preselectedPatientId) {
     selectPatientForQueue(preselectedPatientId);
@@ -1447,7 +1149,7 @@ function openQueueModal(preselectedPatientId = null) {
 
   openModal(modalQueue);
 
-  // Autofocus the search input box immediately so user can search right away
+  // Autofocus search input box immediately if no patient preselected
   if (!preselectedPatientId) {
     setTimeout(() => {
       const searchInput = document.getElementById('queuePatientSearchInput');
@@ -1606,91 +1308,58 @@ function initForms() {
     });
   }
 
-  // 2. Queue for Surgery Form (Supports Both Existing & Walk-in All-in-One)
+  // 2. Queue for Surgery Form
   const formQueueSurgery = document.getElementById('formQueueSurgery');
   if (formQueueSurgery) {
     formQueueSurgery.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      let patient = null;
-      const mode = state.queueMode || 'existing';
+      const patientId = document.getElementById('queueSelectedPatientId').value;
+      const patient = state.patients.find(p => p.id === patientId);
+      const errorHint = document.getElementById('patientSelectError');
 
-      if (mode === 'walkin') {
-        // Walk-in validation
-        const fullName = document.getElementById('walkinFullName').value.trim();
-        const age = parseInt(document.getElementById('walkinAge').value, 10);
-        const gender = document.getElementById('walkinGender').value;
-        const phone = document.getElementById('walkinPhone').value.trim();
-        const bloodType = document.getElementById('walkinBloodType').value || 'Unknown';
-        const allergies = document.getElementById('walkinAllergies').value.trim() || 'NKDA';
-        const notes = document.getElementById('walkinNotes').value.trim();
-        const walkinError = document.getElementById('walkinFieldError');
+      if (!patientId || !patient) {
+        if (errorHint) errorHint.classList.remove('hidden');
+        showToast((typeof currentLang !== 'undefined' && currentLang === 'km') ? 'សូមស្វែងរក និងជ្រើសរើសអ្នកជំងឺពីបញ្ជីអ្នកជំងឺ' : 'Please search and select a patient from the patient list', 'error');
+        const searchInput = document.getElementById('queuePatientSearchInput');
+        if (searchInput) searchInput.focus();
+        return;
+      }
+      if (errorHint) errorHint.classList.add('hidden');
 
-        if (!fullName || isNaN(age) || !gender || !phone) {
-          if (walkinError) walkinError.classList.remove('hidden');
-          showToast('Please fill in required patient fields (Name, Age, Gender, Phone)', 'error');
-          return;
-        }
-        if (walkinError) walkinError.classList.add('hidden');
-
-        // Create and register new walk-in patient into registry
-        const mrn = `MRN-${Math.floor(1000 + Math.random() * 9000)}`;
-        patient = {
-          id: 'pat-' + Date.now(),
-          mrn,
-          fullName,
-          age,
-          gender,
-          phone,
-          bloodType,
-          allergies,
-          notes,
-          registeredAt: new Date().toISOString()
-        };
-
-        // Add to permanent patient list
-        state.patients.unshift(patient);
-      } else {
-        // Existing patient selection validation
-        const patientId = document.getElementById('queueSelectedPatientId').value;
-        patient = state.patients.find(p => p.id === patientId);
-        const errorHint = document.getElementById('patientSelectError');
-
-        if (!patientId || !patient) {
-          if (errorHint) errorHint.classList.remove('hidden');
-          showToast('Please search and select a patient from the patient list', 'error');
-          return;
-        }
-        if (errorHint) errorHint.classList.add('hidden');
-
-        // Check if already in active queue
-        const existing = state.queue.find(q => q.patientId === patientId);
-        if (existing) {
-          showToast(`Patient is already queued under case ${existing.queueNumber}`, 'error');
-          return;
-        }
+      // Check if already in active queue
+      const existing = state.queue.find(q => q.patientId === patientId);
+      if (existing) {
+        showToast((typeof currentLang !== 'undefined' && currentLang === 'km') ? `អ្នកជំងឺនេះមានក្នុងជួរវះកាត់រួចហើយ (ករណី ${existing.queueNumber})` : `Patient is already queued under case ${existing.queueNumber}`, 'error');
+        return;
       }
 
-      const quickProc = document.getElementById('queueQuickProcedure');
-      const mainProc = document.getElementById('queueProcedure');
-      let procedure = (quickProc && quickProc.value) ? quickProc.value : (mainProc && mainProc.value ? mainProc.value : 'Abscess Incision & Drainage');
-      if (procedure === 'Other Minor Surgical Procedure') {
-        const customProc = document.getElementById('queueCustomProcedure');
-        procedure = (customProc && customProc.value.trim()) ? customProc.value.trim() : 'Minor Surgery';
+      // 1. Diagnostic input
+      const diagInput = document.getElementById('queueDiagnosis');
+      const diagnosis = diagInput ? diagInput.value.trim() : '';
+      if (!diagnosis) {
+        showToast((typeof currentLang !== 'undefined' && currentLang === 'km') ? 'សូមបញ្ចូលរោគវិនិច្ឆ័យ (Diagnostic)' : 'Please enter Diagnostic / Diagnosis', 'error');
+        if (diagInput) diagInput.focus();
+        return;
       }
 
-      const quickPriority = document.getElementById('queueQuickPriority');
-      const mainPriority = document.getElementById('queuePriority');
-      const priority = (quickPriority && quickPriority.value) ? quickPriority.value : (mainPriority && mainPriority.value ? mainPriority.value : 'Standard');
+      // 2. Indication input
+      const indInput = document.getElementById('queueIndication');
+      const indication = indInput ? indInput.value.trim() : '';
+      if (!indication) {
+        showToast((typeof currentLang !== 'undefined' && currentLang === 'km') ? 'សូមបញ្ចូលសូចនាករគ្លីនិក (Indication)' : 'Please enter Clinical Indication', 'error');
+        if (indInput) indInput.focus();
+        return;
+      }
 
-      let surgeon = document.getElementById('queueSurgeon') ? document.getElementById('queueSurgeon').value : '';
-      if (!surgeon && state.surgeons.length > 0) surgeon = state.surgeons[0].name;
+      // 3. Case Priority
+      const prioritySelect = document.getElementById('queuePriority');
+      const priority = prioritySelect ? prioritySelect.value : 'Standard';
 
-      let room = document.getElementById('queueRoom') ? document.getElementById('queueRoom').value : '';
-      if (!room && state.rooms.length > 0) room = state.rooms[0].name;
-
-      const anesthesia = document.getElementById('queueAnesthesia') ? document.getElementById('queueAnesthesia').value : 'Local Infiltration (1% Lidocaine w/ Epi)';
-      const notes = document.getElementById('queueNotes') ? document.getElementById('queueNotes').value.trim() : (patient.notes || '');
+      // Default room, surgeon, and anesthesia
+      let surgeon = state.surgeons.length > 0 ? state.surgeons[0].name : 'Dr. Arthur Vance, MD, FRCS';
+      let room = state.rooms.length > 0 ? state.rooms[0].name : 'Minor OR Suite 1';
+      const anesthesia = 'Local Infiltration (1% Lidocaine w/ Epi)';
 
       // Generate Queue Number (e.g., Q-104)
       const queueNumber = `Q-${100 + state.queue.length + state.completed.length + 1}`;
@@ -1704,12 +1373,14 @@ function initForms() {
         age: patient.age,
         gender: patient.gender,
         allergies: patient.allergies,
-        procedure,
+        diagnosis,
+        procedure: diagnosis,
+        indication,
+        notes: indication,
         surgeon,
         room,
         priority,
         anesthesia,
-        notes,
         status: 'waiting',
         queuedAt: new Date().toISOString(),
         startedAt: null,
@@ -1725,13 +1396,12 @@ function initForms() {
       closeModal(document.getElementById('modalQueue'));
 
       // Switch to surgery queue tab so user sees it right away
-      document.getElementById('navQueueTab').click();
+      const navQueueTab = document.getElementById('navQueueTab');
+      if (navQueueTab) navQueueTab.click();
 
-      if (mode === 'walkin') {
-        showToast(`Walk-in patient ${patient.fullName} registered & queued for ${procedure} (${queueNumber})!`, 'success');
-      } else {
-        showToast(`Queued ${patient.fullName} for ${procedure} (${queueNumber})!`, 'success');
-      }
+      showToast((typeof currentLang !== 'undefined' && currentLang === 'km') 
+        ? `បានដាក់អ្នកជំងឺ ${patient.fullName} (${queueNumber}) ចូលជួរវះកាត់សម្រាប់ ${diagnosis}!` 
+        : `Queued ${patient.fullName} (${queueNumber}) for ${diagnosis}!`, 'success');
     });
   }
 
