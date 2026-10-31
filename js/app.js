@@ -71,6 +71,7 @@ function applyTheme(theme, notify = false) {
   const themeText = document.getElementById('themeText');
 
   if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
     document.body.classList.add('dark-mode');
     document.body.classList.remove('light-mode');
     if (themeIcon) themeIcon.textContent = '🌙';
@@ -78,6 +79,7 @@ function applyTheme(theme, notify = false) {
     localStorage.setItem('surgiflow_theme', 'dark');
     if (notify) showToast((typeof currentLang !== 'undefined' && currentLang === 'km') ? 'បានប្តូរទៅជាទម្រង់ងងឹត (Dark Mode)' : 'Switched to Dark Mode', 'info');
   } else {
+    document.documentElement.classList.remove('dark');
     document.body.classList.remove('dark-mode');
     document.body.classList.add('light-mode');
     if (themeIcon) themeIcon.textContent = '☀️';
@@ -315,31 +317,39 @@ function renderQueueList() {
 
     if (isInProgress) {
       statusBadgeHtml = `
-        <span class="status-badge in_progress">
-          <span class="metric-dot active"></span> ${(typeof t === 'function') ? t('filter_in_progress', 'In Surgery') : 'In Procedure'}
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> ${(typeof t === 'function') ? t('filter_in_progress', 'In Surgery') : 'In Procedure'}
         </span>
       `;
       const elapsedMs = item.startedAt ? (Date.now() - new Date(item.startedAt).getTime()) : 0;
       timerHtml = `
-        <span class="timer-text running">
+        <span class="text-xs font-mono font-medium text-emerald-600 dark:text-emerald-400">
           ${(typeof t === 'function') ? t('elapsed_time', 'Elapsed:') : 'Elapsed:'} <span data-timer-start="${item.startedAt}">${formatDuration(elapsedMs)}</span>
         </span>
       `;
     } else {
       statusBadgeHtml = `
-        <span class="status-badge waiting">
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
           ⏳ ${(typeof t === 'function') ? t('status_queued', 'Queued') : 'Queued / Waiting'}
         </span>
       `;
       const waitTime = item.queuedAt ? Math.round((Date.now() - new Date(item.queuedAt).getTime()) / (60 * 1000)) : 0;
-      timerHtml = `<span class="timer-text">${(typeof currentLang !== 'undefined' && currentLang === 'km') ? `រង់ចាំ: ~${waitTime} នាទីមុន` : `Wait: ~${waitTime} min ago`}</span>`;
+      timerHtml = `<span class="text-xs text-slate-500 dark:text-slate-400 font-mono">${(typeof currentLang !== 'undefined' && currentLang === 'km') ? `រង់ចាំ: ~${waitTime} នាទីមុន` : `Wait: ~${waitTime} min ago`}</span>`;
     }
 
     // Priority pill
-    const pClass = item.priority.toLowerCase();
     const pLocalized = (typeof localizePriority === 'function') ? localizePriority(item.priority) : item.priority;
+    let priorityBadgeClass = 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-400';
+    if (isUrgent) {
+      priorityBadgeClass = 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400 font-bold';
+    } else if (item.priority === 'High') {
+      priorityBadgeClass = 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400';
+    } else if (item.priority === 'Elective') {
+      priorityBadgeClass = 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400';
+    }
+
     const priorityPill = `
-      <span class="priority-pill ${pClass}">
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${priorityBadgeClass}">
         ${isUrgent ? '● STAT' : pLocalized}
       </span>
     `;
@@ -348,24 +358,24 @@ function renderQueueList() {
     let actionButtons = '';
     if (!isInProgress) {
       actionButtons = `
-        <button class="btn btn-accent btn-sm" onclick="startSurgeryCase('${item.id}')" title="Call patient to OR and begin case">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-teal-600 hover:bg-teal-700 text-white shadow-sm transition-colors" onclick="startSurgeryCase('${item.id}')" title="Call patient to OR and begin case">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           <span>${(typeof t === 'function') ? t('btn_call_to_or', 'Start Surgery') : 'Start Surgery'}</span>
         </button>
-        <button class="btn btn-secondary btn-sm" onclick="openCaseDetailsModal('${item.id}')" title="View details">
+        <button class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" onclick="openCaseDetailsModal('${item.id}')" title="View details">
           <span>${(typeof t === 'function') ? t('btn_details', 'Details') : 'Details'}</span>
         </button>
-        <button class="btn btn-danger btn-sm" onclick="cancelSurgeryCase('${item.id}')" title="Remove from queue">
+        <button class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-sm font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors" onclick="cancelSurgeryCase('${item.id}')" title="Remove from queue">
           &times;
         </button>
       `;
     } else {
       actionButtons = `
-        <button class="btn btn-success btn-sm" onclick="openCompleteCaseModal('${item.id}')" title="Complete procedure and finalize notes">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-colors" onclick="openCompleteCaseModal('${item.id}')" title="Complete procedure and finalize notes">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
           <span>${(typeof t === 'function') ? t('btn_complete_case', 'Complete Surgery') : 'Complete Surgery'}</span>
         </button>
-        <button class="btn btn-secondary btn-sm" onclick="openCaseDetailsModal('${item.id}')" title="View details">
+        <button class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" onclick="openCaseDetailsModal('${item.id}')" title="View details">
           <span>${(typeof t === 'function') ? t('btn_details', 'Details') : 'Details'}</span>
         </button>
       `;
@@ -378,47 +388,49 @@ function renderQueueList() {
     const ageSuffix = (typeof currentLang !== 'undefined' && currentLang === 'km') ? 'ឆ្នាំ' : 'y';
 
     return `
-      <div class="queue-row ${isInProgress ? 'in-progress' : ''} ${isUrgent ? 'urgent' : ''}">
-        <!-- Column 1: Queue # & Patient -->
-        <div class="col-patient-cell">
-          <div class="queue-num-badge">${item.queueNumber}</div>
-          <div class="patient-info">
-            <div class="patient-name">${escapeHtml(item.patientName)}</div>
-            <div class="patient-meta font-mono">
-              <span>${item.mrn}</span> • <span>${item.age}${ageSuffix} / ${genderLabel}</span>
-              ${hasAllergies ? `<span class="allergy-tag" title="${escapeHtml(item.allergies)}">⚠️ ${escapeHtml(item.allergies.slice(0, 15))}</span>` : ''}
+      <div class="queue-row p-4 lg:px-5 lg:py-3.5 flex flex-col lg:grid lg:grid-cols-12 gap-3 lg:gap-4 items-start lg:items-center hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-l-4 ${isInProgress ? 'in-progress border-l-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/10' : (isUrgent ? 'urgent border-l-rose-500 bg-rose-50/20 dark:bg-rose-950/10' : 'border-l-transparent')}">
+        <!-- Col 1: Queue # & Patient (col-span-3) -->
+        <div class="col-span-3 flex items-center gap-3 w-full">
+          <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800/60 flex items-center justify-center font-mono font-bold text-xs text-teal-700 dark:text-teal-400 shrink-0 shadow-sm">${item.queueNumber}</div>
+          <div class="min-w-0 flex-1">
+            <div class="font-bold text-sm text-slate-900 dark:text-white truncate">${escapeHtml(item.patientName)}</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1.5 flex-wrap">
+              <span>${item.mrn}</span>
+              <span>•</span>
+              <span>${item.age}${ageSuffix} / ${genderLabel}</span>
+              ${hasAllergies ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400" title="${escapeHtml(item.allergies)}">⚠️ ${escapeHtml(item.allergies.slice(0, 15))}</span>` : ''}
             </div>
           </div>
         </div>
 
-        <!-- Column 2: Procedure & Surgeon -->
-        <div class="proc-info">
-          <div class="proc-title">${escapeHtml(localizedProcedure)}</div>
-          <div class="surgeon-name">
+        <!-- Col 2: Procedure & Surgeon (col-span-3) -->
+        <div class="col-span-3 min-w-0 w-full">
+          <div class="font-semibold text-sm text-slate-800 dark:text-slate-100 truncate">${escapeHtml(localizedProcedure)}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            ${escapeHtml(item.surgeon)}
+            <span class="truncate">${escapeHtml(item.surgeon)}</span>
           </div>
         </div>
 
-        <!-- Column 3: Suite & Anesthesia -->
-        <div class="room-info">
-          <div class="room-badge">${escapeHtml(item.room)}</div>
-          <div class="anesthesia-text">${escapeHtml(item.anesthesia)}</div>
+        <!-- Col 3: Suite & Anesthesia (col-span-2) -->
+        <div class="col-span-2 w-full">
+          <div class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 font-mono">${escapeHtml(item.room)}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(item.anesthesia)}</div>
         </div>
 
-        <!-- Column 4: Priority -->
-        <div>
+        <!-- Col 4: Priority (col-span-1) -->
+        <div class="col-span-1">
           ${priorityPill}
         </div>
 
-        <!-- Column 5: Status & Timing -->
-        <div class="status-cell">
+        <!-- Col 5: Status & Timing (col-span-1) -->
+        <div class="col-span-1 flex flex-col gap-1">
           ${statusBadgeHtml}
           ${timerHtml}
         </div>
 
-        <!-- Column 6: Actions -->
-        <div class="actions-cell">
+        <!-- Col 6: Actions (col-span-2) -->
+        <div class="col-span-2 flex items-center justify-end gap-1.5 w-full">
           ${actionButtons}
         </div>
       </div>
@@ -461,14 +473,14 @@ function renderPatientTable() {
     if (activeCase) {
       if (activeCase.status === 'in_progress') {
         const inOrText = (typeof t === 'function') ? t('status_in_minor_or', 'In Minor OR') : 'In Minor OR';
-        queueStatusTag = `<span class="status-badge in_progress" style="cursor:pointer;" onclick="openCaseDetailsModal('${activeCase.id}')" title="Click to view minor surgery details"><span class="metric-dot active"></span> ${inOrText} (${activeCase.queueNumber})</span>`;
+        queueStatusTag = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 cursor-pointer hover:opacity-80 transition-opacity" onclick="openCaseDetailsModal('${activeCase.id}')" title="Click to view minor surgery details"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ${inOrText} (${activeCase.queueNumber})</span>`;
       } else {
         const queuedText = (typeof t === 'function') ? t('status_queued', 'Queued') : 'Queued';
-        queueStatusTag = `<span class="status-badge waiting" style="cursor:pointer;" onclick="openCaseDetailsModal('${activeCase.id}')" title="Click to view queued case details"><span class="metric-dot active"></span> ${queuedText} (${activeCase.queueNumber})</span>`;
+        queueStatusTag = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 cursor-pointer hover:opacity-80 transition-opacity" onclick="openCaseDetailsModal('${activeCase.id}')" title="Click to view queued case details"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> ${queuedText} (${activeCase.queueNumber})</span>`;
       }
     } else {
       const notQueuedText = (typeof t === 'function') ? t('status_not_queued', 'Not Queued') : 'Not Queued';
-      queueStatusTag = `<span class="text-muted text-xs">${notQueuedText}</span>`;
+      queueStatusTag = `<span class="text-xs text-slate-400">${notQueuedText}</span>`;
     }
 
     const hasAllergy = p.allergies && p.allergies.toUpperCase() !== 'NKDA' && p.allergies.toUpperCase() !== 'NONE';
@@ -477,32 +489,32 @@ function renderPatientTable() {
     const bloodLabel = (typeof t === 'function') ? t('blood', 'Blood:') : 'Blood:';
 
     return `
-      <tr>
-        <td class="font-mono"><strong>${p.mrn}</strong></td>
-        <td>
-          <div style="font-weight:700; color:var(--heading-color);">${escapeHtml(p.fullName)}</div>
-          <div class="text-xs text-muted font-mono">${escapeHtml(p.phone)}</div>
+      <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+        <td class="px-5 py-4 font-mono font-bold text-teal-600 dark:text-teal-400">${p.mrn}</td>
+        <td class="px-5 py-4">
+          <div class="font-bold text-slate-900 dark:text-white">${escapeHtml(p.fullName)}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 font-mono">${escapeHtml(p.phone)}</div>
         </td>
-        <td>
-          <div>${p.age} ${ageSuffix} • ${genderLabel}</div>
-          <div class="text-xs text-muted">${bloodLabel} <strong style="color:#38bdf8;">${p.bloodType || 'Unknown'}</strong></div>
+        <td class="px-5 py-4">
+          <div class="text-slate-800 dark:text-slate-200">${p.age} ${ageSuffix} • ${genderLabel}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">${bloodLabel} <strong class="text-cyan-600 dark:text-cyan-400">${p.bloodType || 'Unknown'}</strong></div>
         </td>
-        <td>
-          <div style="max-width: 280px; font-size: 0.82rem;">
-            ${hasAllergy ? `<span class="allergy-tag">⚠️ ${escapeHtml(p.allergies)}</span><br>` : '<span class="text-muted text-xs">NKDA</span><br>'}
-            <span class="text-muted">${escapeHtml(p.notes || 'No pre-op notes.')}</span>
+        <td class="px-5 py-4">
+          <div class="max-w-xs text-xs space-y-1">
+            ${hasAllergy ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400">⚠️ ${escapeHtml(p.allergies)}</span><br>` : '<span class="text-slate-400 text-xs">NKDA</span><br>'}
+            <span class="text-slate-500 dark:text-slate-400">${escapeHtml(p.notes || 'No pre-op notes.')}</span>
           </div>
         </td>
-        <td>
+        <td class="px-5 py-4">
           ${queueStatusTag}
         </td>
-        <td style="text-align: right;">
-          <div class="patient-actions-group">
-            <button class="btn btn-secondary btn-sm" onclick="openEditPatientModal('${p.id}')" title="Edit patient details">
+        <td class="px-5 py-4 text-right">
+          <div class="inline-flex items-center gap-1.5">
+            <button class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" onclick="openEditPatientModal('${p.id}')" title="Edit patient details">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               <span>${(typeof t === 'function') ? t('btn_edit', 'Edit') : 'Edit'}</span>
             </button>
-            <button class="btn btn-danger btn-sm" onclick="deletePatient('${p.id}')" title="Delete patient from list">
+            <button class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors" onclick="deletePatient('${p.id}')" title="Delete patient from list">
               <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
               <span>${(typeof t === 'function') ? t('btn_delete', 'Delete') : 'Delete'}</span>
             </button>
@@ -554,39 +566,39 @@ function renderCompletedTable() {
     const minSuffix = (typeof t === 'function') ? t('mins', 'min') : 'min';
 
     return `
-      <tr>
-        <td>
-          <div style="font-weight:700; color:#38bdf8;" class="font-mono">${c.queueNumber}</div>
-          <div class="text-xs text-muted font-mono">${compDate} ${compTime}</div>
+      <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+        <td class="px-5 py-4">
+          <div class="font-mono font-bold text-teal-600 dark:text-teal-400">${c.queueNumber}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 font-mono">${compDate} ${compTime}</div>
         </td>
-        <td>
-          <div style="font-weight:700; color:var(--heading-color);">${escapeHtml(c.patientName)}</div>
-          <div class="text-xs text-muted font-mono">${c.mrn}</div>
+        <td class="px-5 py-4">
+          <div class="font-bold text-slate-900 dark:text-white">${escapeHtml(c.patientName)}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 font-mono">${c.mrn}</div>
         </td>
-        <td>
-          <div style="font-weight:600; color:var(--text-main);">${escapeHtml(localizedProc)}</div>
-          <div class="text-xs text-muted">${escapeHtml(c.anesthesia || 'Local')}</div>
+        <td class="px-5 py-4">
+          <div class="font-semibold text-slate-800 dark:text-slate-200">${escapeHtml(localizedProc)}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">${escapeHtml(c.anesthesia || 'Local')}</div>
         </td>
-        <td>
-          <div>${escapeHtml(c.surgeon)}</div>
-          <div class="text-xs text-muted">${escapeHtml(c.room)}</div>
+        <td class="px-5 py-4">
+          <div class="text-slate-800 dark:text-slate-200 font-medium">${escapeHtml(c.surgeon)}</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">${escapeHtml(c.room)}</div>
         </td>
-        <td>
-          <span class="status-badge" style="background:rgba(56, 189, 248, 0.12); color:#38bdf8; font-family:var(--font-mono);">
+        <td class="px-5 py-4">
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-300">
             ⏱️ ${c.durationMinutes || '25'} ${minSuffix}
           </span>
         </td>
-        <td>
-          <div style="max-width: 280px; font-size: 0.82rem;">
-            <div><strong>${closureLabel}</strong> ${escapeHtml(c.sutureType || 'Primary suture')}</div>
-            <div class="text-xs ${c.specimen && c.specimen.startsWith('Yes') ? 'text-danger' : 'text-muted'}">
+        <td class="px-5 py-4">
+          <div class="max-w-xs text-xs space-y-0.5">
+            <div><strong class="text-slate-700 dark:text-slate-300">${closureLabel}</strong> <span class="text-slate-600 dark:text-slate-400">${escapeHtml(c.sutureType || 'Primary suture')}</span></div>
+            <div class="${c.specimen && c.specimen.startsWith('Yes') ? 'text-rose-600 dark:text-rose-400 font-semibold' : 'text-slate-500 dark:text-slate-400'}">
               <strong>${pathologyLabel}</strong> ${escapeHtml(c.specimen || ((typeof t === 'function') ? t('none', 'None') : 'None'))}
             </div>
-            <div class="text-xs text-muted" style="margin-top:2px;">${escapeHtml(c.postOpNotes || '')}</div>
+            <div class="text-slate-500 dark:text-slate-400 truncate">${escapeHtml(c.postOpNotes || '')}</div>
           </div>
         </td>
-        <td style="text-align: right;">
-          <button class="btn btn-secondary btn-sm" onclick="openCompletedDetailsModal('${c.id}')">
+        <td class="px-5 py-4 text-right">
+          <button class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" onclick="openCompletedDetailsModal('${c.id}')">
             ${summaryBtnText}
           </button>
         </td>
@@ -625,9 +637,9 @@ function renderRoomsAndSurgeons() {
       const isAvailable = room.status === 'Available';
       const label = isAvailable ? ((typeof currentLang !== 'undefined' && currentLang === 'km') ? 'រួចរាល់' : 'Ready') : ((typeof currentLang !== 'undefined' && currentLang === 'km') ? 'កំពុងវះកាត់' : 'In Use');
       return `
-        <div class="room-status-item">
-          <span style="font-weight:600;">${escapeHtml(room.name)}</span>
-          <span class="room-status-badge ${isAvailable ? 'available' : 'occupied'}">
+        <div class="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 text-xs transition-colors">
+          <span class="font-medium text-slate-700 dark:text-slate-300">${escapeHtml(room.name)}</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${isAvailable ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'}">
             ${label}
           </span>
         </div>
@@ -642,23 +654,23 @@ function renderRoomsAndSurgeons() {
       const statusText = isOccupied ? ((typeof t === 'function') ? t('status_occupied', '● SURGERY ACTIVE') : '● SURGERY ACTIVE') : ((typeof t === 'function') ? t('status_available', '✓ AVAILABLE') : '✓ AVAILABLE');
       const roomDesc = (typeof t === 'function') ? t('room_equipped_desc', 'Equipped for local anesthesia, electrocautery, and sterile minor sets.') : 'Equipped for local anesthesia, electrocautery, and sterile minor sets.';
       return `
-        <div class="room-card ${isOccupied ? 'occupied' : ''}">
-          <div class="room-card-header">
-            <span class="room-card-title">${escapeHtml(room.name)}</span>
-            <span class="room-status-badge ${isOccupied ? 'occupied' : 'available'}">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border ${isOccupied ? 'border-emerald-300 dark:border-emerald-800 shadow-sm' : 'border-slate-200 dark:border-slate-800'} p-5 transition-all">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <span class="font-bold text-slate-900 dark:text-white text-base">${escapeHtml(room.name)}</span>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${isOccupied ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}">
               ${statusText}
             </span>
           </div>
-          <div class="room-card-body">
-            <p><strong>Type:</strong> ${escapeHtml(room.type)}</p>
+          <div class="mt-3 text-sm">
+            <p class="text-xs text-slate-500 dark:text-slate-400"><strong>Type:</strong> ${escapeHtml(room.type)}</p>
             ${isOccupied ? `
-              <div style="margin-top:0.6rem; padding:0.6rem; background:rgba(16, 185, 129, 0.08); border-radius:6px; border:1px solid rgba(16, 185, 129, 0.2);">
-                <div style="color:#059669; font-weight:700;">Case: ${room.currentCase}</div>
-                <div style="color:var(--heading-color); font-weight:600;">${escapeHtml(room.activePatient)}</div>
-                <div class="text-xs text-muted">${escapeHtml((typeof localizeProcedure === 'function') ? localizeProcedure(room.activeProcedure) : room.activeProcedure)}</div>
+              <div class="mt-3 p-3 bg-emerald-50/70 dark:bg-emerald-950/30 rounded-lg border border-emerald-200 dark:border-emerald-800/50">
+                <div class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Case: ${room.currentCase}</div>
+                <div class="font-bold text-slate-900 dark:text-white mt-0.5">${escapeHtml(room.activePatient)}</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml((typeof localizeProcedure === 'function') ? localizeProcedure(room.activeProcedure) : room.activeProcedure)}</div>
               </div>
             ` : `
-              <p class="text-muted" style="margin-top:0.4rem;">${roomDesc}</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">${roomDesc}</p>
             `}
           </div>
         </div>
@@ -674,13 +686,13 @@ function renderRoomsAndSurgeons() {
       const statusLabel = isOperating ? ((typeof t === 'function') ? t('filter_in_progress', 'In Surgery') : 'In Surgery') : ((typeof currentLang !== 'undefined' && currentLang === 'km') ? 'កំពុងបំពេញការងារ' : 'On Duty');
 
       return `
-        <div class="surgeon-card">
-          <div class="surgeon-avatar">${surg.initials}</div>
-          <div class="surgeon-details">
-            <h4>${escapeHtml(surg.name)}</h4>
-            <p>${escapeHtml(surg.specialty)}</p>
-            <div style="margin-top:4px;">
-              <span class="status-badge ${isOperating ? 'in_progress' : 'waiting'}" style="font-size:0.68rem; padding:1px 6px;">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 flex items-center gap-3.5 hover:shadow-sm transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-teal-600 text-white font-bold flex items-center justify-center text-sm shadow-sm shrink-0">${surg.initials}</div>
+          <div class="min-w-0 flex-1">
+            <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate">${escapeHtml(surg.name)}</h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">${escapeHtml(surg.specialty)}</p>
+            <div class="mt-1.5">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold ${isOperating ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}">
                 ${statusLabel}
               </span>
             </div>
@@ -971,9 +983,9 @@ function renderPatientSearchResults(query = '') {
     const emptyPrompt = (typeof t === 'function') ? t('no_patient_match', 'No matching patient found in list for') : 'No matching patient found in list for';
     const regPrompt = (typeof t === 'function') ? t('register_new_patient_prompt', '+ Register as New Patient') : '+ Register as New Patient';
     container.innerHTML = `
-      <div class="patient-search-empty">
+      <div class="p-6 text-center text-slate-500 dark:text-slate-400 text-sm">
         <p>${emptyPrompt} "<strong>${escapeHtml(query)}</strong>"</p>
-        <button type="button" class="btn btn-primary btn-sm" style="margin-top:0.5rem;" onclick="openPatientRegisterFromSearch()">
+        <button type="button" class="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-teal-600 hover:bg-teal-700 text-white shadow-sm transition-colors" onclick="openPatientRegisterFromSearch()">
           ${regPrompt}
         </button>
       </div>
@@ -994,26 +1006,26 @@ function renderPatientSearchResults(query = '') {
     const genderLabel = p.gender === 'Female' ? ((typeof t === 'function') ? t('opt_female', 'Female') : 'Female') : p.gender === 'Male' ? ((typeof t === 'function') ? t('opt_male', 'Male') : 'Male') : p.gender;
 
     return `
-      <div class="patient-search-item ${isQueued ? 'in-queue' : ''}" onclick="onSelectPatientResult('${p.id}')">
-        <div class="patient-item-left">
-          <div class="patient-item-avatar">${escapeHtml(p.fullName.charAt(0))}</div>
-          <div class="patient-item-info">
-            <div class="item-name-row">
-              <span class="item-name">${escapeHtml(p.fullName)}</span>
-              <span class="mrn-badge font-mono">${p.mrn}</span>
+      <div class="patient-search-item p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-teal-500 dark:hover:border-teal-500 hover:bg-teal-50/30 dark:hover:bg-teal-950/20 cursor-pointer flex items-center justify-between gap-3 transition-colors ${isQueued ? 'bg-slate-50 dark:bg-slate-800/30' : 'bg-white dark:bg-slate-900'}" onclick="onSelectPatientResult('${p.id}')">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded-xl bg-teal-100 text-teal-700 dark:bg-teal-950/60 dark:text-teal-400 font-bold flex items-center justify-center text-xs shrink-0">${escapeHtml(p.fullName.charAt(0))}</div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-slate-900 dark:text-white truncate">${escapeHtml(p.fullName)}</span>
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">${p.mrn}</span>
             </div>
-            <div class="item-sub font-mono">
-              ${p.phone} • ${p.age}${ageSuffix} / ${genderLabel} • ${bloodLabel} <strong style="color:#0284c7;">${p.bloodType || 'Unknown'}</strong>
+            <div class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+              ${p.phone} • ${p.age}${ageSuffix} / ${genderLabel} • ${bloodLabel} <strong class="text-teal-600 dark:text-teal-400">${p.bloodType || 'Unknown'}</strong>
             </div>
-            ${hasAllergy ? `<div class="item-allergy-alert text-danger">⚠️ ${allergiesLabel} ${escapeHtml(p.allergies)}</div>` : ''}
+            ${hasAllergy ? `<div class="text-xs text-rose-600 dark:text-rose-400 font-medium mt-0.5">⚠️ ${allergiesLabel} ${escapeHtml(p.allergies)}</div>` : ''}
           </div>
         </div>
-        <div class="patient-item-right">
+        <div class="shrink-0">
           ${isQueued ? `
-            <span class="status-badge waiting">${queuedLabel} (${isQueued.queueNumber})</span>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">${queuedLabel} (${isQueued.queueNumber})</span>
           ` : `
-            <span class="btn btn-secondary btn-sm" style="pointer-events:none;">
-              <span>${selectLabel}</span>
+            <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-teal-50 text-teal-700 hover:bg-teal-100 dark:bg-teal-950/50 dark:text-teal-400 border border-teal-200 dark:border-teal-800 pointer-events-none transition-colors">
+              ${selectLabel}
             </span>
           `}
         </div>
@@ -1073,9 +1085,9 @@ function selectPatientForQueue(patientId) {
   if (allergiesEl) {
     allergiesEl.textContent = patient.allergies || 'No Known Drug Allergies (NKDA)';
     if (patient.allergies && patient.allergies.toUpperCase() !== 'NKDA') {
-      allergiesEl.className = 'text-danger';
+      allergiesEl.className = 'text-rose-600 dark:text-rose-400 font-semibold';
     } else {
-      allergiesEl.className = 'text-muted';
+      allergiesEl.className = 'text-slate-500 dark:text-slate-400';
     }
   }
   if (notesEl) notesEl.textContent = patient.notes || 'No pre-op assessment notes recorded.';
@@ -1535,57 +1547,57 @@ window.cancelSurgeryCase = function (caseId) {
     const patient = state.patients.find(p => p.id === item.patientId) || {};
 
     body.innerHTML = `
-    <div class="details-grid">
-      <div class="detail-item">
-        <div class="detail-label">Patient Demographics</div>
-        <div class="detail-value">${escapeHtml(item.patientName)}</div>
-        <div class="text-xs text-muted font-mono" style="margin-top:2px;">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Patient Demographics</div>
+        <div class="text-base font-bold text-slate-900 dark:text-white">${escapeHtml(item.patientName)}</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
           ${item.mrn} • ${item.age} years old • ${item.gender}
         </div>
-        <div class="text-xs" style="margin-top:4px;">Blood: <strong>${patient.bloodType || 'Unknown'}</strong></div>
+        <div class="text-xs text-slate-600 dark:text-slate-300 mt-1.5">Blood: <strong class="text-teal-600 dark:text-teal-400">${patient.bloodType || 'Unknown'}</strong></div>
       </div>
 
-      <div class="detail-item">
-        <div class="detail-label">Surgical Procedure</div>
-        <div class="detail-value" style="color:#38bdf8;">${escapeHtml(item.procedure)}</div>
-        <div class="text-xs text-muted" style="margin-top:2px;">Anesthesia: ${escapeHtml(item.anesthesia)}</div>
-        <div class="text-xs text-muted">Surgeon: ${escapeHtml(item.surgeon)}</div>
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Surgical Procedure</div>
+        <div class="text-base font-bold text-teal-600 dark:text-teal-400">${escapeHtml(item.procedure)}</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Anesthesia: ${escapeHtml(item.anesthesia)}</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400">Surgeon: ${escapeHtml(item.surgeon)}</div>
       </div>
 
-      <div class="detail-item">
-        <div class="detail-label">Allergies & Clinical Precautions</div>
-        <div class="detail-value ${item.allergies && item.allergies !== 'NKDA' ? 'text-danger' : ''}">
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Allergies & Clinical Precautions</div>
+        <div class="text-sm font-semibold ${item.allergies && item.allergies !== 'NKDA' ? 'text-rose-600 dark:text-rose-400' : 'text-slate-700 dark:text-slate-200'}">
           ${escapeHtml(item.allergies || 'No Known Drug Allergies')}
         </div>
-        <div class="text-xs text-muted" style="margin-top:4px;">
+        <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
           ${escapeHtml(item.notes || 'No special pre-op instructions provided.')}
         </div>
       </div>
 
-      <div class="detail-item">
-        <div class="detail-label">Location & Status</div>
-        <div class="detail-value">${escapeHtml(item.room)}</div>
-        <div style="margin-top:6px;">
-          <span class="status-badge ${item.status}">${item.status === 'in_progress' ? 'In Surgery' : 'Queued / Waiting'}</span>
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Location & Status</div>
+        <div class="text-base font-bold text-slate-900 dark:text-white">${escapeHtml(item.room)}</div>
+        <div class="mt-2">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${item.status === 'in_progress' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'}">${item.status === 'in_progress' ? 'In Surgery' : 'Queued / Waiting'}</span>
         </div>
       </div>
     </div>
 
-    <div class="timeline-box">
-      <div class="detail-label">Surgical Case Timeline</div>
-      <div class="timeline-list">
-        <div class="timeline-item">
-          <span class="timeline-time">${item.queuedAt ? new Date(item.queuedAt).toLocaleTimeString() : '--:--'}</span>
-          <span>Queued for Minor Surgery by triage desk</span>
+    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800">
+      <div class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2.5">Surgical Case Timeline</div>
+      <div class="space-y-2 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="font-mono font-semibold text-teal-600 dark:text-teal-400 shrink-0">${item.queuedAt ? new Date(item.queuedAt).toLocaleTimeString() : '--:--'}</span>
+          <span class="text-slate-600 dark:text-slate-300">Queued for Minor Surgery by triage desk</span>
         </div>
         ${item.startedAt ? `
-          <div class="timeline-item">
-            <span class="timeline-time">${new Date(item.startedAt).toLocaleTimeString()}</span>
-            <span>Called to ${escapeHtml(item.room)}; Procedure initiated by ${escapeHtml(item.surgeon)}</span>
+          <div class="flex items-center gap-2">
+            <span class="font-mono font-semibold text-emerald-600 dark:text-emerald-400 shrink-0">${new Date(item.startedAt).toLocaleTimeString()}</span>
+            <span class="text-slate-600 dark:text-slate-300">Called to ${escapeHtml(item.room)}; Procedure initiated by ${escapeHtml(item.surgeon)}</span>
           </div>
         ` : `
-          <div class="timeline-item text-muted">
-            <span class="timeline-time">Pending</span>
+          <div class="flex items-center gap-2 text-slate-400">
+            <span class="font-mono font-semibold shrink-0">Pending</span>
             <span>Awaiting OR room prep and patient call-in</span>
           </div>
         `}
@@ -1612,37 +1624,37 @@ window.cancelSurgeryCase = function (caseId) {
     subtitle.textContent = `Completed Procedure • ${item.procedure}`;
 
     body.innerHTML = `
-    <div class="details-grid">
-      <div class="detail-item">
-        <div class="detail-label">Patient</div>
-        <div class="detail-value">${escapeHtml(item.patientName)}</div>
-        <div class="text-xs text-muted font-mono">${item.mrn}</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Patient</div>
+        <div class="text-base font-bold text-slate-900 dark:text-white">${escapeHtml(item.patientName)}</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">${item.mrn}</div>
       </div>
 
-      <div class="detail-item">
-        <div class="detail-label">Operating Room & Surgeon</div>
-        <div class="detail-value">${escapeHtml(item.surgeon)}</div>
-        <div class="text-xs text-muted">${escapeHtml(item.room)}</div>
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Operating Room & Surgeon</div>
+        <div class="text-base font-bold text-slate-900 dark:text-white">${escapeHtml(item.surgeon)}</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(item.room)}</div>
       </div>
 
-      <div class="detail-item">
-        <div class="detail-label">Duration & Timing</div>
-        <div class="detail-value" style="color:#10b981;">${item.durationMinutes || '30'} minutes</div>
-        <div class="text-xs text-muted">Completed: ${item.completedAt ? new Date(item.completedAt).toLocaleString() : ''}</div>
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Duration & Timing</div>
+        <div class="text-base font-bold text-emerald-600 dark:text-emerald-400">${item.durationMinutes || '30'} minutes</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Completed: ${item.completedAt ? new Date(item.completedAt).toLocaleString() : ''}</div>
       </div>
 
-      <div class="detail-item">
-        <div class="detail-label">Specimen & Closure</div>
-        <div class="detail-value">${escapeHtml(item.sutureType || 'Primary suture')}</div>
-        <div class="text-xs ${item.specimen && item.specimen.startsWith('Yes') ? 'text-danger' : 'text-muted'}">
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Specimen & Closure</div>
+        <div class="text-sm font-semibold text-slate-800 dark:text-slate-200">${escapeHtml(item.sutureType || 'Primary suture')}</div>
+        <div class="text-xs ${item.specimen && item.specimen.startsWith('Yes') ? 'text-rose-600 dark:text-rose-400 font-semibold' : 'text-slate-500 dark:text-slate-400'} mt-0.5">
           Pathology: ${escapeHtml(item.specimen || 'None')}
         </div>
       </div>
     </div>
 
-    <div class="timeline-box" style="margin-bottom:1rem;">
-      <div class="detail-label">Post-Operative Surgeon Notes</div>
-      <p style="font-size:0.9rem; color:#f1f5f9; margin-top:0.4rem; line-height:1.5;">
+    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 mb-4">
+      <div class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Post-Operative Surgeon Notes</div>
+      <p class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
         ${escapeHtml(item.postOpNotes || 'Procedure completed successfully without complications.')}
       </p>
     </div>
@@ -1699,23 +1711,28 @@ window.cancelSurgeryCase = function (caseId) {
     if (!container) return;
 
     const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
 
+    let colorClasses = 'bg-slate-900 text-white dark:bg-slate-800 border border-slate-700/80 shadow-lg';
     let icon = 'ℹ️';
-    if (type === 'success') icon = '✓';
-    if (type === 'error') icon = '⚠️';
+    if (type === 'success') {
+      colorClasses = 'bg-teal-600 text-white shadow-lg shadow-teal-600/25 border border-teal-500';
+      icon = '✓';
+    } else if (type === 'error') {
+      colorClasses = 'bg-rose-600 text-white shadow-lg shadow-rose-600/25 border border-rose-500';
+      icon = '⚠️';
+    }
+
+    toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 transform translate-y-0 opacity-100 ${colorClasses}`;
 
     toast.innerHTML = `
-    <span style="font-weight:700;">${icon}</span>
-    <span>${escapeHtml(message)}</span>
-  `;
+      <span class="font-bold text-sm shrink-0">${icon}</span>
+      <span class="leading-snug">${escapeHtml(message)}</span>
+    `;
 
     container.appendChild(toast);
 
     setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(8px)';
-      toast.style.transition = 'all 0.25s ease';
+      toast.classList.add('opacity-0', 'translate-y-2');
       setTimeout(() => toast.remove(), 250);
     }, 3500);
   }
