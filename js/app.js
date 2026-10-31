@@ -107,7 +107,35 @@ function initStorage() {
     state.completed = savedCompleted ? JSON.parse(savedCompleted) : [];
     state.rooms = savedRooms ? JSON.parse(savedRooms) : window.DEFAULT_ROOMS;
     state.surgeons = savedSurgeons ? JSON.parse(savedSurgeons) : window.DEFAULT_SURGEONS;
+
+    // Ensure all patients & queue items have paymentType (backwards compatibility)
+    state.patients.forEach(p => {
+      if (!p.paymentType) p.paymentType = 'CASE';
+    });
+    state.queue.forEach(q => {
+      if (!q.paymentType) {
+        const pt = state.patients.find(p => p.id === q.patientId);
+        q.paymentType = pt ? (pt.paymentType || 'CASE') : 'CASE';
+      }
+    });
+    state.completed.forEach(c => {
+      if (!c.paymentType) c.paymentType = 'CASE';
+    });
   }
+}
+
+/**
+ * Payment Badge Generator for HEF, NSSF, CASE
+ */
+function getPaymentBadgeHtml(paymentType) {
+  const type = (paymentType || 'CASE').toUpperCase();
+  if (type === 'HEF') {
+    return `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-300/60 dark:border-emerald-800 tracking-wide" title="Health Equity Fund (មូលនិធិសមធម៌)">HEF</span>`;
+  }
+  if (type === 'NSSF') {
+    return `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-300/60 dark:border-blue-800 tracking-wide" title="National Social Security Fund (ប.ស.ស.)">NSSF</span>`;
+  }
+  return `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300/60 dark:border-amber-800 tracking-wide" title="Case Payment / Cash (បង់ថ្លៃសេវា)">CASE</span>`;
 }
 
 function saveState() {
@@ -393,7 +421,10 @@ function renderQueueList() {
         <div class="col-span-3 flex items-center gap-3 w-full">
           <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800/60 flex items-center justify-center font-mono font-bold text-xs text-teal-700 dark:text-teal-400 shrink-0 shadow-sm">${item.queueNumber}</div>
           <div class="min-w-0 flex-1">
-            <div class="font-bold text-sm text-slate-900 dark:text-white truncate">${escapeHtml(item.patientName)}</div>
+            <div class="font-bold text-sm text-slate-900 dark:text-white truncate flex items-center gap-1.5">
+              <span class="truncate">${escapeHtml(item.patientName)}</span>
+              ${getPaymentBadgeHtml(item.paymentType)}
+            </div>
             <div class="text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1.5 flex-wrap">
               <span>${item.mrn}</span>
               <span>•</span>
@@ -500,6 +531,9 @@ function renderPatientTable() {
           <div class="text-xs text-slate-500 dark:text-slate-400">${bloodLabel} <strong class="text-cyan-600 dark:text-cyan-400">${p.bloodType || 'Unknown'}</strong></div>
         </td>
         <td class="px-5 py-4">
+          ${getPaymentBadgeHtml(p.paymentType)}
+        </td>
+        <td class="px-5 py-4">
           <div class="max-w-xs text-xs space-y-1">
             ${hasAllergy ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-400">⚠️ ${escapeHtml(p.allergies)}</span><br>` : '<span class="text-slate-400 text-xs">NKDA</span><br>'}
             <span class="text-slate-500 dark:text-slate-400">${escapeHtml(p.notes || 'No pre-op notes.')}</span>
@@ -572,7 +606,10 @@ function renderCompletedTable() {
           <div class="text-xs text-slate-500 dark:text-slate-400 font-mono">${compDate} ${compTime}</div>
         </td>
         <td class="px-5 py-4">
-          <div class="font-bold text-slate-900 dark:text-white">${escapeHtml(c.patientName)}</div>
+          <div class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+            <span>${escapeHtml(c.patientName)}</span>
+            ${getPaymentBadgeHtml(c.paymentType)}
+          </div>
           <div class="text-xs text-slate-500 dark:text-slate-400 font-mono">${c.mrn}</div>
         </td>
         <td class="px-5 py-4">
@@ -1013,6 +1050,7 @@ function renderPatientSearchResults(query = '') {
             <div class="flex items-center gap-2">
               <span class="font-bold text-sm text-slate-900 dark:text-white truncate">${escapeHtml(p.fullName)}</span>
               <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">${p.mrn}</span>
+              ${getPaymentBadgeHtml(p.paymentType)}
             </div>
             <div class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
               ${p.phone} • ${p.age}${ageSuffix} / ${genderLabel} • ${bloodLabel} <strong class="text-teal-600 dark:text-teal-400">${p.bloodType || 'Unknown'}</strong>
@@ -1091,6 +1129,23 @@ function selectPatientForQueue(patientId) {
     }
   }
   if (notesEl) notesEl.textContent = patient.notes || 'No pre-op assessment notes recorded.';
+
+  // Update payment badge on selected patient card
+  const paymentBadge = document.getElementById('selectedPatientPaymentBadge');
+  if (paymentBadge) {
+    const pt = (patient.paymentType || 'CASE').toUpperCase();
+    paymentBadge.textContent = pt;
+    if (pt === 'HEF') {
+      paymentBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-300/60 dark:border-emerald-800 tracking-wide';
+      paymentBadge.title = 'Health Equity Fund (មូលនិធិសមធម៌)';
+    } else if (pt === 'NSSF') {
+      paymentBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-300/60 dark:border-blue-800 tracking-wide';
+      paymentBadge.title = 'National Social Security Fund (ប.ស.ស.)';
+    } else {
+      paymentBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300/60 dark:border-amber-800 tracking-wide';
+      paymentBadge.title = 'Case Payment / Cash (បង់ថ្លៃសេវា)';
+    }
+  }
 
   // Swap views
   if (searchContainer) searchContainer.classList.add('hidden');
@@ -1195,6 +1250,9 @@ window.openEditPatientModal = function (patientId) {
   document.getElementById('editGender').value = patient.gender;
   document.getElementById('editPhone').value = patient.phone;
   document.getElementById('editBloodType').value = patient.bloodType || 'Unknown';
+  if (document.getElementById('editPaymentType')) {
+    document.getElementById('editPaymentType').value = patient.paymentType || 'CASE';
+  }
   document.getElementById('editAllergies').value = patient.allergies || '';
   document.getElementById('editNotes').value = patient.notes || '';
 
@@ -1241,6 +1299,7 @@ function initForms() {
       const gender = document.getElementById('regGender').value;
       const phone = document.getElementById('regPhone').value.trim();
       const bloodType = document.getElementById('regBloodType').value;
+      const paymentType = document.getElementById('regPaymentType') ? document.getElementById('regPaymentType').value : 'CASE';
       const allergies = document.getElementById('regAllergies').value.trim() || 'NKDA';
       const notes = document.getElementById('regNotes').value.trim();
 
@@ -1256,6 +1315,7 @@ function initForms() {
         gender,
         phone,
         bloodType,
+        paymentType,
         allergies,
         notes,
         registeredAt: new Date().toISOString()
@@ -1293,6 +1353,7 @@ function initForms() {
       const gender = document.getElementById('editGender').value;
       const phone = document.getElementById('editPhone').value.trim();
       const bloodType = document.getElementById('editBloodType').value;
+      const paymentType = document.getElementById('editPaymentType') ? document.getElementById('editPaymentType').value : 'CASE';
       const allergies = document.getElementById('editAllergies').value.trim() || 'NKDA';
       const notes = document.getElementById('editNotes').value.trim();
 
@@ -1301,6 +1362,7 @@ function initForms() {
       patient.gender = gender;
       patient.phone = phone;
       patient.bloodType = bloodType;
+      patient.paymentType = paymentType;
       patient.allergies = allergies;
       patient.notes = notes;
 
@@ -1311,6 +1373,7 @@ function initForms() {
         queuedCase.age = age;
         queuedCase.gender = gender;
         queuedCase.allergies = allergies;
+        queuedCase.paymentType = paymentType;
       }
 
       saveState();
@@ -1384,6 +1447,7 @@ function initForms() {
         mrn: patient.mrn,
         age: patient.age,
         gender: patient.gender,
+        paymentType: patient.paymentType || 'CASE',
         allergies: patient.allergies,
         diagnosis,
         procedure: diagnosis,
@@ -1550,7 +1614,10 @@ window.cancelSurgeryCase = function (caseId) {
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
       <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
         <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Patient Demographics</div>
-        <div class="text-base font-bold text-slate-900 dark:text-white">${escapeHtml(item.patientName)}</div>
+        <div class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span>${escapeHtml(item.patientName)}</span>
+          ${getPaymentBadgeHtml(item.paymentType || patient.paymentType)}
+        </div>
         <div class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
           ${item.mrn} • ${item.age} years old • ${item.gender}
         </div>
@@ -1627,7 +1694,10 @@ window.cancelSurgeryCase = function (caseId) {
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
       <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800">
         <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Patient</div>
-        <div class="text-base font-bold text-slate-900 dark:text-white">${escapeHtml(item.patientName)}</div>
+        <div class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span>${escapeHtml(item.patientName)}</span>
+          ${getPaymentBadgeHtml(item.paymentType)}
+        </div>
         <div class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">${item.mrn}</div>
       </div>
 
@@ -1676,11 +1746,12 @@ window.cancelSurgeryCase = function (caseId) {
         return;
       }
 
-      const headers = ['Case #', 'MRN', 'Patient Name', 'Procedure', 'Surgeon', 'Room', 'Duration (mins)', 'Specimen', 'Suture / Closure', 'Completed Date'];
+      const headers = ['Case #', 'MRN', 'Patient Name', 'Payment Type', 'Procedure', 'Surgeon', 'Room', 'Duration (mins)', 'Specimen', 'Suture / Closure', 'Completed Date'];
       const rows = state.completed.map(c => [
         `"${c.queueNumber}"`,
         `"${c.mrn}"`,
         `"${c.patientName}"`,
+        `"${c.paymentType || 'CASE'}"`,
         `"${c.procedure}"`,
         `"${c.surgeon}"`,
         `"${c.room}"`,

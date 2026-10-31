@@ -24,6 +24,7 @@ window.DEFAULT_PATIENTS = [
     gender: 'Male',
     phone: '+1 (555) 234-8901',
     bloodType: 'O+',
+    paymentType: 'CASE',
     allergies: 'Penicillin (Anaphylaxis)',
     notes: 'Hypertensive, well-controlled on Amlodipine. Large recurrent sebaceous cyst on upper back.',
     registeredAt: new Date(Date.now() - 3600 * 1000 * 3).toISOString()
@@ -36,6 +37,7 @@ window.DEFAULT_PATIENTS = [
     gender: 'Female',
     phone: '+1 (555) 876-1234',
     bloodType: 'A+',
+    paymentType: 'NSSF',
     allergies: 'NKDA (No Known Drug Allergies)',
     notes: 'Accidental laceration right palmar surface while preparing food. Hemostasis held by pressure bandage.',
     registeredAt: new Date(Date.now() - 3600 * 1000 * 2).toISOString()
@@ -48,6 +50,7 @@ window.DEFAULT_PATIENTS = [
     gender: 'Male',
     phone: '+1 (555) 432-9012',
     bloodType: 'B-',
+    paymentType: 'HEF',
     allergies: 'Latex hypersensitivity',
     notes: 'Subcutaneous mobile mass on left posterior neck, 4cm, non-tender. Suspicious for lipoma.',
     registeredAt: new Date(Date.now() - 3600 * 1000 * 1.5).toISOString()
@@ -60,6 +63,7 @@ window.DEFAULT_PATIENTS = [
     gender: 'Female',
     phone: '+1 (555) 908-1122',
     bloodType: 'AB+',
+    paymentType: 'HEF',
     allergies: 'Sulfa drugs',
     notes: 'Fluctuant cutaneous abscess left thigh, erythema and localized warmth. Requires immediate incision & drainage.',
     registeredAt: new Date(Date.now() - 3600 * 1000 * 1).toISOString()
@@ -72,6 +76,7 @@ window.DEFAULT_PATIENTS = [
     gender: 'Male',
     phone: '+1 (555) 345-6789',
     bloodType: 'O-',
+    paymentType: 'CASE',
     allergies: 'Codeine',
     notes: 'Pigmented lesion right shoulder border, irregular borders. Punch biopsy indicated.',
     registeredAt: new Date(Date.now() - 3600 * 1000 * 4).toISOString()
@@ -87,6 +92,7 @@ window.DEFAULT_QUEUE = [
     mrn: 'MRN-4824',
     age: 24,
     gender: 'Female',
+    paymentType: 'HEF',
     allergies: 'Sulfa drugs',
     procedure: 'Abscess Incision & Drainage',
     surgeon: 'Dr. Arthur Vance, MD, FRCS',
@@ -107,6 +113,7 @@ window.DEFAULT_QUEUE = [
     mrn: 'MRN-4822',
     age: 29,
     gender: 'Female',
+    paymentType: 'NSSF',
     allergies: 'NKDA',
     procedure: 'Wound Debridement & Suturing',
     surgeon: 'Dr. Julian Ross, MBChB',
@@ -127,6 +134,7 @@ window.DEFAULT_QUEUE = [
     mrn: 'MRN-4823',
     age: 56,
     gender: 'Male',
+    paymentType: 'HEF',
     allergies: 'Latex hypersensitivity',
     procedure: 'Lipoma Excision (Subcutaneous)',
     surgeon: 'Dr. Maya Lin, MD',
@@ -148,6 +156,7 @@ window.DEFAULT_COMPLETED = [
     patientId: 'pat-1001',
     patientName: 'Robert Sterling',
     mrn: 'MRN-4821',
+    paymentType: 'CASE',
     procedure: 'Sebaceous Cyst Removal',
     surgeon: 'Dr. Arthur Vance, MD, FRCS',
     room: 'Minor OR Suite 1',
